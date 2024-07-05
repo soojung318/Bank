@@ -12,7 +12,7 @@ const setup = async () => {
 
   try{
     //mongodb 접속
-  const mongoDbUrl = 'mongodb+srv://admin:1234@cluster0.vgyrq7f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+  const mongoDbUrl = 'mongodb+srv://admin:1234@cluster0.nlg2a7w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
   const mongoConn = await MongoClient.connect(mongoDbUrl, 
     {
       useNewUrlParser:true,
@@ -25,7 +25,7 @@ const setup = async () => {
     mysqldb = mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '0719',
+      password: '1234',
       database: 'myboard'
     });
     mysqldb.connect();
