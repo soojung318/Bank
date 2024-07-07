@@ -1,10 +1,53 @@
 const router = require('express').Router();
 const setup = require('../db_setup');
+
 const sha = require('sha256');
 
-// 회원 가입 화면 보기
-router.get('/account/enter', (req, res) => {
-  res.render('login_enter.ejs');
+// 로그아웃 처리
+router.get('/account/logout', (req, res) => {
+  req.session.destroy();
+  res.render('index.ejs');
+});
+
+// 로그인 처리
+router.post("/account/login", async (req, res) => {
+  const { mongodb, mysqldb } = await setup();
+  mongodb
+    .collection("account")
+    .findOne({ userid: req.body.userid })
+    .then((result) => {
+      if (result) {
+        const sql = `SELECT salt FROM UserSalt 
+                    WHERE userid=?`;
+        mysqldb.query(sql, [req.body.userid], (err, rows, fields) => {
+          if (err) {
+            res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
+            return;
+          }
+          try {
+            const salt = rows[0].salt;
+            const hashPw = sha(req.body.userpw + salt);
+            //  console.log(hashPw);
+            if (result.userpw == hashPw) {
+              req.body.userpw = hashPw;
+              req.session.user = req.body;
+              //console.log(req.session.user);
+              res.cookie("uid", req.body.userid);
+              res.render("index.ejs");
+            } else {
+              res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
+            }
+          } catch (err) {
+            res.render("index.ejs", {data:{alertMsg:'다시 로그인 해주세요'}});
+          }
+        });
+      } else {
+        res.render("index.ejs", {data:{alertMsg:'다시 로그인 해주세요'}});
+      }
+    })
+    .catch((err) => {
+      res.render("index.ejs", {data:{alertMsg:'다시 로그인 해주세요'}});
+    });
 });
 
 // 회원 가입 처리
@@ -60,6 +103,11 @@ router.post('/account/save', async (req, res) => {
     console.log(err);
     return res.render('index.ejs', { data: { alertMsg: '회원 가입 실패' } });
   }
+});
+
+// 회원 가입 화면 보기
+router.get('/account/enter', (req, res) => {
+  res.render('login_enter.ejs');
 });
 
 module.exports = router;
