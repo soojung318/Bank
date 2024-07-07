@@ -30,28 +30,29 @@
  <header id="header" class="header d-flex align-items-center fixed-top">
   <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-
     <a href="/" class="logo d-flex align-items-center me-auto">
       <!-- Uncomment the line below if you also wish to use an image logo -->
       <!-- <img src="assets/img/logo.png" alt=""> -->
       <h1 class="sitename">Team1Bank</h1>
+    </a>
+
     <nav id="navmenu" class="navmenu">
       <ul>
         <li><a href="/" class="active">Home<br></a></li>
-        <li class="dropdown"><a href="#"><span>관리자</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+        
+        <li class="dropdown" id="adminDropdown"><a href="#"><span>관리자</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
-            <li><a href="/board/admin_board">게시판 관리</a></li>
-            <li><a href="/product/admin">상품 관리</a></li>
+            <li><a href="#" id="adminBoardLink">게시판 관리</a></li>
+            <li><a href="#" id="productAdminLink">상품 관리</a></li>
           </ul>
         </li>
         <li><a href="/board/board">게시판</a></li>
         <li class="dropdown"><a href="#"><span>Product</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
-            <li><a href="/product/product_intro">상품 소개</a></li>
+            <li><a href="/product/product_intro" >상품 소개</a></li>
             <li><a href="/product/product_list">상품 조회</a></li>
           </ul>
         </li>
-
       </ul>
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
@@ -83,6 +84,41 @@
         $.removeCookie("uid", { path: "/" });
         location.href = "/account/logout";
       }
+      document.getElementById('adminBoardLink').addEventListener('click', function(event) {
+    event.preventDefault(); // 기본 클릭 이벤트 제거
+    
+    // prompt 창 띄우기
+    const adminCode = prompt('관리자 인증코드를 입력하세요.');
+    
+    // 관리자 인증코드 확인
+    if (adminCode === 'admin1234') {
+        // 인증 성공 시, 관리자 게시판 관리 페이지로 이동
+        alert('관리자로 인증되었습니다. 게시판 관리 페이지로 이동합니다.');
+        window.location.href = '/board/admin_board'; // 적절한 관리자 게시판 관리 페이지 URL로 변경
+    } else {
+        // 인증 실패 시, 홈 페이지로 이동
+        alert('인증코드가 올바르지 않습니다. 다시 시도해주세요.');
+        window.location.href = '/'; // 적절한 홈 페이지 URL로 변경
+    }
+});
+
+document.getElementById('productAdminLink').addEventListener('click', function(event) {
+    event.preventDefault(); // 기본 클릭 이벤트 제거
+    
+    // prompt 창 띄우기
+    const adminCode = prompt('관리자 인증코드를 입력하세요.');
+    
+    // 관리자 인증코드 확인
+    if (adminCode === 'admin1234') {
+        // 인증 성공 시, 상품 관리 페이지로 이동
+        alert('관리자로 인증되었습니다. 상품 관리 페이지로 이동합니다.');
+        window.location.href = '/product/admin'; // 적절한 상품 관리 페이지 URL로 변경
+    } else {
+        // 인증 실패 시, 홈 페이지로 이동
+        alert('인증코드가 올바르지 않습니다. 다시 시도해주세요.');
+        window.location.href = '/'; // 적절한 홈 페이지 URL로 변경
+    }
+});
     </script>
 
   </div>
