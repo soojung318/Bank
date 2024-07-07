@@ -6,7 +6,7 @@ const sha = require('sha256');
 // 로그아웃 처리
 router.get('/account/logout', (req, res) => {
   req.session.destroy();
-  res.render('index.ejs');
+  res.redirect("/");
 });
 
 // 로그인 처리
