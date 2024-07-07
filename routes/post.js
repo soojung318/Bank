@@ -251,15 +251,11 @@ router.post("/post/answer", async (req, res) => {
     res.render("index.ejs", { data: { alertMsg: "관리자 권한이 필요합니다. 로그인 후 다시 시도해주세요." } });
   }
 });
-router.get('/product/product_list', async function (req, res) {
-  const { mongodb } = await setup();
-  mongodb.collection('product').find().toArray()
+router.get('/product/product_list', function (req, res) {
+  mydb.collection('product').find().toArray()
   .then(result =>{
       // ejs 로 랜더링
-      res.render('product/product_list.ejs', {data : result});
+      res.render('product_list.ejs', {data : result});
   });
-});
-router.get('/product/product_intro', function (req, res) {
-    res.render('product/product_intro.ejs');
 });
 module.exports = router;
