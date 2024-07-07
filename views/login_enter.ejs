@@ -19,7 +19,7 @@
 
       <div class="form-group">
         <label>비밀번호</label>
-        <input type="password" class="form-control" name="userpw">
+        <input type="password" class="form-control" name="userpw" placeholder="5자리 이상 입력하세요">
         <% if(typeof data != 'undefined' && data.pwMsg){ %>
           <span class="text-danger"><%= data.pwMsg %></span>
         <% } %>
@@ -27,12 +27,12 @@
 
       <div class="form-group">
         <label>이름</label>
-        <input type="text" class="form-control" name="username">
+        <input type="text" class="form-control" name="username" placeholder="ex) 홍길동">
       </div><p></p> 
 
       <div class="form-group">
         <label>권한</label>
-        <input type="text" class="form-control" name="userrole">
+        <input type="text" class="form-control" name="userrole" placeholder="guest or admin">
       </div><p></p> 
 
       <button type="submit" class="btn btn-warning">회원가입</button>
