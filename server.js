@@ -4,7 +4,8 @@ const path = require("path");
 const dotenv = require("dotenv").config();
 
 const app = express();
-
+app.set('view engine', 'ejs'); 
+app.set('views', path.join(__dirname, 'views')); // views 디렉토리의 절대 경로 설정
 app.use(express.static(path.join(__dirname, "assets")));
 
 // app.use(express.static("Bank")); 
