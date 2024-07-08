@@ -6,49 +6,50 @@ const sha = require('sha256');
 // 로그아웃 처리
 router.get('/account/logout', (req, res) => {
   req.session.destroy();
-  res.render('index.ejs');
+  res.redirect("/");
 });
 
 // 로그인 처리
 router.post("/account/login", async (req, res) => {
   const { mongodb, mysqldb } = await setup();
-  mongodb
-    .collection("account")
-    .findOne({ userid: req.body.userid })
-    .then((result) => {
-      if (result) {
-        const sql = `SELECT salt FROM UserSalt 
-                    WHERE userid=?`;
-        mysqldb.query(sql, [req.body.userid], (err, rows, fields) => {
-          if (err) {
+  try {
+    const result = await mongodb.collection("account").findOne({ userid: req.body.userid });
+
+    if (result) {
+      const sql = `SELECT salt FROM UserSalt WHERE userid=?`;
+      mysqldb.query(sql, [req.body.userid], async (err, rows, fields) => {
+        if (err) {
+          res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
+          return;
+        }
+        try {
+          const salt = rows[0].salt;
+          const hashPw = sha(req.body.userpw + salt);
+          if (result.userpw == hashPw) {
+            const userRole = result.userrole; // MongoDB에서 role 가져오기
+
+            req.session.user = {
+              userid: req.body.userid,
+              userpw: hashPw,
+              role: userRole // 세션에 role 저장
+            };
+            res.cookie("uid", req.body.userid);
+            res.render("index.ejs");
+          } else {
             res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
-            return;
           }
-          try {
-            const salt = rows[0].salt;
-            const hashPw = sha(req.body.userpw + salt);
-            //  console.log(hashPw);
-            if (result.userpw == hashPw) {
-              req.body.userpw = hashPw;
-              req.session.user = req.body;
-              //console.log(req.session.user);
-              res.cookie("uid", req.body.userid);
-              res.render("index.ejs");
-            } else {
-              res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
-            }
-          } catch (err) {
-            res.render("index.ejs", {data:{alertMsg:'다시 로그인 해주세요'}});
-          }
-        });
-      } else {
-        res.render("index.ejs", {data:{alertMsg:'다시 로그인 해주세요'}});
-      }
-    })
-    .catch((err) => {
-      res.render("index.ejs", {data:{alertMsg:'다시 로그인 해주세요'}});
-    });
+        } catch (err) {
+          res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
+        }
+      });
+    } else {
+      res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
+    }
+  } catch (err) {
+    res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
+  }
 });
+
 
 // 회원 가입 처리
 router.post('/account/save', async (req, res) => {
@@ -75,7 +76,7 @@ router.post('/account/save', async (req, res) => {
       if (role === 'admin') {
         const adminPassword = req.body.adminPassword; // 클라이언트에서 전송한 관리자 비밀번호
         if (adminPassword !== 'admin1234') {
-          return res.render('index.ejs', { data: { alert: '관리자 인증에 실패하였습니다.' } });
+          return res.render('index.ejs', { data: { alertMsg: '관리자 인증에 실패하였습니다.' } });
         }
       }
 

@@ -82,7 +82,7 @@ router.post("/post/update", async (req, res) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("index.ejs", { data: { alertMsg: "글이 없거나 글수정자가 일치하지 않습니다 " } });
+          res.render("board/board.ejs", { data: { alertMsg: "글이 없거나 글수정자가 일치하지 않습니다 " } });
         }
       })
       .catch((err) => {
@@ -131,19 +131,25 @@ router.post("/post/save", async (req, res) => {
 });
 
 
-//로그인 된 사용자만 글쓰기 화면 보여주기
+// 로그인 된 사용자만 글쓰기 화면 보여주기
 router.get("/board/board_enter", function (req, res) {
   if (req.session.user) {
-    req.session.csrf_token=crypto.randomBytes(32).toString('hex');
-    res.render("board/board_enter.ejs", { data: { id: req.session.user.userid }, csrf_token:req.session.csrf_token  });
+    req.session.csrf_token = crypto.randomBytes(32).toString('hex');
+    // csrf_token과 role을 함께 전달
+    res.render("board/board_enter.ejs", {
+      data: {
+        id: req.session.user.userid,
+      },
+      csrf_token: req.session.csrf_token
+    });
   } else {
-    res.render("index.ejs", { data: { alertMsg: "로그인 먼저 해주세요" } });
+    res.redirect("index.ejs", { data: { alertMsg: "로그인 먼저 해주세요" } });
   }
 });
 
 //로그인 된 사용자만 게시물 목록을 보여주기
 router.get("/board/board", async (req, res) => {
-  if (req.session.user&&req.session.user.role=='guest') {//게스트용 화면 보여주기
+  if (req.session.user) {//게스트용 화면 보여주기
     const { mongodb } = await setup();
     list(mongodb, req, res);
   } else {
@@ -179,15 +185,26 @@ function list(mongodb, req, res) {
     });
 }
 
-//로그인 된 사용자 & 관리자만 접근 가능한 게시물 목록을 보여주기
+//게시글 관리 접근
 router.get("/board/admin_board", async (req, res) => {
-  if (req.session.user&&req.session.user.role=='admin') {//관리자용 화면 보여주기
-    const { mongodb } = await setup();
-    list(mongodb, req, res);
+  if (req.session.user) {
+    if (req.session.user.role === 'admin') {
+      try {
+        const { mongodb } = await setup();
+        // 관리자 권한으로 접근 가능한 게시물 목록을 가져오는 함수
+        list(mongodb, req, res);
+      } catch (err) {
+        console.error("MongoDB 연결 오류:", err);
+        res.render("index.ejs", { data: { alertMsg: "서버 오류: 잠시 후 다시 시도해주세요." } });
+      }
+    } else {
+      res.render("index.ejs", { data: { alertMsg: "권한이 없습니다." } });
+    }
   } else {
-    res.render("index.ejs", { data: { alertMsg: "잘못된 접근입니다" } });
+    res.render("index.ejs", { data: { alertMsg: "로그인이 필요합니다." } });
   }
 });
+
 
 function list(mongodb, req, res) {
   let page = parseInt(req.query.page ? req.query.page : 1);
@@ -251,11 +268,15 @@ router.post("/post/answer", async (req, res) => {
     res.render("index.ejs", { data: { alertMsg: "관리자 권한이 필요합니다. 로그인 후 다시 시도해주세요." } });
   }
 });
-router.get('/product/product_list', function (req, res) {
-  mydb.collection('product').find().toArray()
+router.get('/product/product_list', async function (req, res) {
+  const { mongodb } = await setup();
+  mongodb.collection('product').find().toArray()
   .then(result =>{
       // ejs 로 랜더링
-      res.render('product_list.ejs', {data : result});
+      res.render('product/product_list.ejs', {data : result});
   });
+});
+router.get('/product/product_intro', function (req, res) {
+    res.render('product/product_intro.ejs');
 });
 module.exports = router;
