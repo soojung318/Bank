@@ -5,12 +5,12 @@ const { ObjectId } = require("mongodb");
 const crypto = require('crypto');
 const multer = require('multer');
 
-const storage=multer.diskStorage({
+const storage = multer.diskStorage({
   destination: (req, file, done) => {
-  done(null, './public/image')
+    done(null, './public/image')
   }, filename: (req, file, done) => {
     done(null, file.originalname)
-  }, limit : 5*1024*1024
+  }, limit: 5 * 1024 * 1024
 });
 
 const upload = multer({ storage });
@@ -18,9 +18,9 @@ const upload = multer({ storage });
 
 ////////파일 첨부 처리
 let imagepath = '';
-router.post('/post/photo',upload.single('picture') , (req, res) => {
+router.post('/post/photo', upload.single('picture'), (req, res) => {
   console.log('서버에 파일 첨부하기', req.file.path);
-  imagepath =  req.file.originalname;
+  imagepath = req.file.originalname;
 });
 
 
@@ -100,27 +100,27 @@ router.post("/post/save", async (req, res) => {
   if (req.session.user) {
     if (req.session.user.userid == req.body.id) {
       console.log('req.session.csrf_token', req.session.csrf_token)
-      if (typeof req.session.csrf_token != 'undefined' &&  typeof req.body.frsc != 'undefined' &&  req.session.csrf_token==req.body.frsc) { //csrf_token이 맞으면
+      if (typeof req.session.csrf_token != 'undefined' && typeof req.body.frsc != 'undefined' && req.session.csrf_token == req.body.frsc) { //csrf_token이 맞으면
         const { mongodb } = await setup();
         mongodb
-        .collection("post")
+          .collection("post")
           .insertOne({
             id: req.body.id,
             title: req.body.title,
             content: req.body.content,
             date: new Date(),
-            path:imagepath
+            path: imagepath
           })
-        .then((result) => {
-          //console.log(result);
-          console.log("데이터 추가 성공");
-          delete req.session.csrf_token;
-          list(mongodb, req, res);
-        });
+          .then((result) => {
+            //console.log(result);
+            console.log("데이터 추가 성공");
+            delete req.session.csrf_token;
+            list(mongodb, req, res);
+          });
       } else {
         console.log("글쓰기 csrf 해킹 시도 발생...");
         res.render("index.ejs", { data: { alertMsg: "글쓰기 csrf 해킹 시도 발생! 주의요망!!" } });
-      }      
+      }
     } else {
       console.log("글쓰기 해킹 시도 발생...");
       res.render("index.ejs", { data: { alertMsg: "로그인 사용자와 글작성자가 일치하지 않습니다 " } });
@@ -236,12 +236,12 @@ function list(mongodb, req, res) {
 ////답변 안된 게시물만 답변해주기. 관리자 권한 확인.
 router.post("/post/answer", async (req, res) => {
   //console.log(req.body, "\n===============");
-  if (req.session.user&&req.session.user.role=='admin') {
+  if (req.session.user && req.session.user.role == 'admin') {
     // 로그인 된 사용자라면&관리자라면
     const { mongodb } = await setup();
     mongodb
       .collection("post")
-      .findOne({  _id: new ObjectId(req.body._id), answer: { $exists: false } }) //답변이 안된건 지 확인
+      .findOne({ _id: new ObjectId(req.body._id), answer: { $exists: false } }) //답변이 안된건 지 확인
       .then((result) => {
         //console.log(result, "\n", req.session);
         if (result) {
@@ -250,7 +250,7 @@ router.post("/post/answer", async (req, res) => {
             .insertOne({ _id: new ObjectId(req.body._id) }, { $set: { anwer_title: req.body.title, answer_content: req.body.content, answer_date: req.body.someDate } })
             .then((result) => {
               console.log("답변 완료");
-              answer=1;
+              answer = 1;
               list(mongodb, req, res);
             })
             .catch((err) => {
@@ -271,12 +271,12 @@ router.post("/post/answer", async (req, res) => {
 router.get('/product/product_list', async function (req, res) {
   const { mongodb } = await setup();
   mongodb.collection('product').find().toArray()
-  .then(result =>{
+    .then(result => {
       // ejs 로 랜더링
-      res.render('product/product_list.ejs', {data : result});
-  });
+      res.render('product/product_list.ejs', { data: result });
+    });
 });
 router.get('/product/product_intro', function (req, res) {
-    res.render('product/product_intro.ejs');
+  res.render('product/product_intro.ejs');
 });
 module.exports = router;

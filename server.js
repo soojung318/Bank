@@ -2,6 +2,7 @@ const setup = require('./db_setup');
 const express = require("express");
 const path = require("path");
 const dotenv = require("dotenv").config();
+const assetRouter = require("./routes/assetManagement");
 
 const app = express();
 
@@ -33,8 +34,11 @@ app.get('/', (req, res) => {
 // 등록자를 사용하겠다 -> 등록 대행자 설정
 app.use('/', require('./routes/account'));
 app.use('/', require('./routes/post'));
+app.use('/', assetRouter); //자산관리
 
 app.listen(process.env.WEB_PORT, async () => {
   await setup();
   console.log(`${process.env.WEB_PORT} 서버가 준비되었습니다...`);
 });
+
+
