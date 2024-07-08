@@ -18,10 +18,10 @@
     <div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.jpg);">
       <div class="container position-relative">
         <h1>게시판</h1>
-        <p>공지사항, 민원, Q&A를 작성하는 공간입니다</p>
+        <p>공지사항, 민원, Q&A</p>
         <nav class="breadcrumbs">
           <ol>
-            <li><a href="index.ejs">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li class="current">게시판</li>
           </ol>
         </nav>
@@ -30,6 +30,9 @@
     <table class="table table-hover text-center container mt-4" style="border-collapse: collapse;">
       <thead>
         <tr style="border-bottom: 1px solid #dee2e6;">
+          <div class="container my-3">
+            <a href="#" class="board_enter btn btn-primary" style="float:right">글쓰기</a>>
+          </div>
           </tr>
       </thead>
       <tbody>
@@ -62,17 +65,16 @@
         <a class="page-link" href="/board/board?page=<%= currentPage + 1 %>">Next</a>
       </li>
       <% } %>
-    </ul>
+    </ul>  
+    
   </nav>
-  <div class="container my-3">
-    <button class="board_enter btn btn-primary" style="float: right">글쓰기</button>
-  </div>
+
 
 </main>
    
   <script>
     $(".board_enter").click(function () {
-      location.href = "/post/board_enter";
+      location.href = "/board/board_enter";
     });
 
     let modalData;
