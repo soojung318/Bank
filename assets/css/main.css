@@ -2002,6 +2002,35 @@ section,
 /*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/
-.starter-section {
-  /* Add your styles here */
+#loginSpan {
+  display: flex;
+  align-items: center;
+  height: 60px;
+}
+
+#loginSpan form {
+  display: flex;
+  align-items: center;
+}
+
+#loginSpan input[type="text"],
+#loginSpan input[type="password"],
+#loginSpan input[type="submit"],
+#loginSpan .btn-getstarted {
+  margin-right: 10px;
+  padding: 8px;
+  font-size: 14px;
+  width: 120px;
+}
+
+#loginSpan div {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+#loginSpan div img {
+  margin-right: 5px;
 }

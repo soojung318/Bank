@@ -1,18 +1,25 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - Logis Bootstrap Template</title>
+  <title>1조 파이널 프로젝트</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <%- include('menu.html') %>
+
+ 
 </head>
 
 <body class="index-page">
-
+ <% if(typeof data != 'undefined' && data.alertMsg){ %>
+    <script>
+      alert(`<%= data.alertMsg %>`) ;
+    </script>            
+  <% } %>
   <main class="main">
 
     <!-- Hero Section -->
@@ -23,11 +30,13 @@
       <div class="container">
         <div class="row gy-4 d-flex justify-content-between">
           <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
-            <h2 data-aos="fade-up">Your Lightning Fast Delivery Partner</h2>
-            <p data-aos="fade-up" data-aos-delay="100">Facere distinctio molestiae nisi fugit tenetur repellat non praesentium nesciunt optio quis sit odio nemo quisquam. eius quos reiciendis eum vel eum voluptatem eum maiores eaque id optio ullam occaecati odio est possimus vel reprehenderit</p>
+            <h2 data-aos="fade-up">1조 파이널 프로젝트</h2>
+            <p data-aos="fade-up" data-aos-delay="100">
+              I wrote down an English sentence that seems to have a special meaning but is completely meaningless. This will make the web page look a little nicer unless you look at this article in detail.
+              I feel like I need to fill in a little more, but I don't know what else to write. I'll try to extend the length just a little more. Do you understand?</p>
 
             <form action="#" class="form-search d-flex align-items-stretch mb-3" data-aos="fade-up" data-aos-delay="200">
-              <input type="text" class="form-control" placeholder="Your ZIP code or City. e.g. New York">
+              <input type="text" class="form-control" placeholder="찾고 싶은 서비스를 입력해 주세요.">
               <button type="submit" class="btn btn-primary">Search</button>
             </form>
 
@@ -36,7 +45,7 @@
               <div class="col-lg-3 col-6">
                 <div class="stats-item text-center w-100 h-100">
                   <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="0" class="purecounter">232</span>
-                  <p>Clients</p>
+                  <p>보유자산</p>
                 </div>
               </div><!-- End Stats Item -->
 
@@ -600,69 +609,7 @@
 
   </main>
 
-  <footer id="footer" class="footer dark-background">
-
-    <div class="container footer-top">
-      <div class="row gy-4">
-        <div class="col-lg-5 col-md-12 footer-about">
-          <a href="index.html" class="logo d-flex align-items-center">
-            <span class="sitename">Logis</span>
-          </a>
-          <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
-          <div class="social-links d-flex mt-4">
-            <a href=""><i class="bi bi-twitter-x"></i></a>
-            <a href=""><i class="bi bi-facebook"></i></a>
-            <a href=""><i class="bi bi-instagram"></i></a>
-            <a href=""><i class="bi bi-linkedin"></i></a>
-          </div>
-        </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Useful Links</h4>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About us</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Terms of service</a></li>
-            <li><a href="#">Privacy policy</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-2 col-6 footer-links">
-          <h4>Our Services</h4>
-          <ul>
-            <li><a href="#">Web Design</a></li>
-            <li><a href="#">Web Development</a></li>
-            <li><a href="#">Product Management</a></li>
-            <li><a href="#">Marketing</a></li>
-            <li><a href="#">Graphic Design</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
-          <h4>Contact Us</h4>
-          <p>A108 Adam Street</p>
-          <p>New York, NY 535022</p>
-          <p>United States</p>
-          <p class="mt-4"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
-          <p><strong>Email:</strong> <span>info@example.com</span></p>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">Logis</strong> <span>All Rights Reserved</span></p>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-      </div>
-    </div>
-
-  </footer>
+  <%- include('footer.html') %>
 
   <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>

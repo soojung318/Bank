@@ -349,4 +349,32 @@ function admin_list(mongodb, req, res) {
         });
     });
 }
+// 검색 라우트 추가
+router.get('/search', async (req, res) => {
+  const { field, query } = req.query;
+
+  if (!field || !query) {
+      return res.status(400).json({ error: '필드와 검색어를 입력해주세요.' });
+  }
+
+  const { mongodb } = await setup();
+  let searchCriteria = {};
+
+  if (field === '_id') {
+      try {
+          searchCriteria[field] = new ObjectId(query);
+      } catch (err) {
+          return res.status(400).json({ error: '유효한 ObjectId를 입력해주세요.' });
+      }
+  } else {
+      searchCriteria[field] = { $regex: query, $options: 'i' }; // 대소문자 구분 없이 검색
+  }
+
+  try {
+      const results = await mongodb.collection('post').find(searchCriteria).toArray();
+      res.json(results);
+  } catch (err) {
+      res.status(500).json({ error: '서버 오류: 잠시 뒤 다시 시도 해주세요.' });
+  }
+});
 module.exports = router;
