@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logis - Logistics Website</title>
 
   <!-- Favicons -->
   <link href="/img/favicon.png" rel="icon">
@@ -32,132 +26,107 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
-  
-  <style>
-    /* 추가된 스타일 */
-    #loginSpan {
-      display: flex;
-      align-items: center;
-      height: 60px; /* 원하는 높이로 조정 */
-    }
-    
-    #loginSpan form {
-      display: flex;
-      align-items: center;
-    }
-    
-    #loginSpan input[type="text"],
-    #loginSpan input[type="password"],
-    #loginSpan input[type="submit"],
-    #loginSpan .btn-getstarted {
-      margin-right: 10px;
-      padding: 8px; /* 내용과 테두리 사이의 간격 */
-      font-size: 14px; /* 글꼴 크기 */
-      width: 120px; /* 필드의 너비 */
-    }
-    
-    #loginSpan div {
-      background-color: white;
-      display: flex;
-      align-items: center;
-      padding: 5px;
-      margin-right: 10px;
-    }
-    
-    #loginSpan div img {
-      margin-right: 5px;
-    }
-  </style>
-</head>
-<body>
 
-  <header id="header" class="header d-flex align-items-center fixed-top">
-    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+ <header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-      <a href="index.html" class="logo d-flex align-items-center me-auto">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
-        <h1 class="sitename">Logis</h1>
-      </a>
+    <a href="/" class="logo d-flex align-items-center me-auto">
+      <!-- Uncomment the line below if you also wish to use an image logo -->
+      <!-- <img src="assets/img/logo.png" alt=""> -->
+      <h1 class="sitename">Team1Bank</h1>
+    </a>
 
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="index.html" class="active">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="pricing.html">Pricing</a></li>
-          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="#">Dropdown 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li>
-              <li><a href="#">Dropdown 4</a></li>
-            </ul>
-          </li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="/" class="active">Home<br></a></li>
+        
+        <li class="dropdown" id="adminDropdown"><a href="#"><span>관리자</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+          <ul>
+            <li><a href="#" id="adminBoardLink">게시판 관리</a></li>
+            <li><a href="#" id="productAdminLink">상품 관리</a></li>
+          </ul>
+        </li>
+        <li><a href="/board/board">게시판</a></li>
+        <li class="dropdown"><a href="#"><span>Product</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+          <ul>
+            <li><a href="/product/product_intro" >상품 소개</a></li>
+            <li><a href="/product/product_list">상품 조회</a></li>
+          </ul>
+        </li>
+      </ul>
+      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+    </nav>
 
-      <span id="loginSpan" class="ms-auto">
-        <form action="/account/login" method="post">
-          <input type="text" name="userid" placeholder="ID" class="me-2">
-          <input type="password" name="userpw" placeholder="PW" class="me-2">
-          <input type="text" name="captcha" placeholder="CAPTCHA 입력" class="me-2">
-          <div>
-            <img id="captchaImg" src="/captcha" alt="CAPTCHA">
-            <button type="button" onclick="refreshCaptcha()">Refresh</button>
-          </div>
-          <input type="submit" value="Login" class="btn btn-outline-warning me-2">
-        </form>
-        <a class="btn-getstarted" href="/account/enter">회원가입</a>
-      </span>
+    <span id="loginSpan" class="ms-auto">
+      <form action="/account/login" method="post">
+        <input type="text" name="userid" placeholder="ID" class="me-2">
+        <input type="password" name="userpw" placeholder="PW" class="me-2">
+        <input type="text" name="captcha" placeholder="CAPTCHA 입력" class="me-2">
+        <div>
+          <img id="captchaImg" src="/captcha" alt="CAPTCHA">
+          <button type="button" onclick="refreshCaptcha()">Refresh</button>
+        </div>
+        <input type="submit" value="Login" class="btn btn-outline-warning me-2">
+      </form>
+      <a class="btn-getstarted" href="/account/enter">회원가입</a>
+    </span>
 
-    </div>
-  </header>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
-  <!-- Vendor JS Files -->
-  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="/vendor/aos/aos.js"></script>
-  <script src="/vendor/php-email-form/validate.js"></script>
-  <script src="/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="/vendor/purecounter/purecounter.js"></script>
-  <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="/vendor/glightbox/js/glightbox.min.js"></script>
-
-  <!-- Main JS File -->
-  <script src="/js/main.js"></script>
-
-  <!-- jQuery and Cookie Plugin -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-
-  <script>
-    $(document).ready(function() {
+    <script>
       const uid = $.cookie("uid");
-      if (uid) {
-        $("#loginSpan").html(`${uid} <button onclick="logout()" class="btn btn-warning">logout</button>`);
+
+      $(document).ready(function() {
+        const uid = $.cookie("uid");
+        if (uid) {
+          $("#loginSpan").html(`${uid} <button onclick="logout()" class="btn btn-warning">logout</button>`);
       }
-    });
+      });
 
-    function logout() {
-      $.removeCookie("uid", { path: "/" });
-      location.href = "/account/logout";
+      function logout() {
+        $.removeCookie("uid", { path: "/" });
+        location.href = "/account/logout";
+      }
+      document.getElementById('adminBoardLink').addEventListener('click', function(event) {
+    event.preventDefault(); // 기본 클릭 이벤트 제거
+    
+    // prompt 창 띄우기
+    const adminCode = prompt('관리자 인증코드를 입력하세요.');
+    
+    // 관리자 인증코드 확인
+    if (adminCode === 'admin1234') {
+        // 인증 성공 시, 관리자 게시판 관리 페이지로 이동
+        alert('관리자로 인증되었습니다. 게시판 관리 페이지로 이동합니다.');
+        window.location.href = '/board/admin_board'; // 적절한 관리자 게시판 관리 페이지 URL로 변경
+    } else {
+        // 인증 실패 시, 홈 페이지로 이동
+        alert('인증코드가 올바르지 않습니다. 다시 시도해주세요.');
+        window.location.href = '/'; // 적절한 홈 페이지 URL로 변경
     }
+});
 
-    function refreshCaptcha() {
+document.getElementById('productAdminLink').addEventListener('click', function(event) {
+    event.preventDefault(); // 기본 클릭 이벤트 제거
+    
+    // prompt 창 띄우기
+    const adminCode = prompt('관리자 인증코드를 입력하세요.');
+    
+    // 관리자 인증코드 확인
+    if (adminCode === 'admin1234') {
+        // 인증 성공 시, 상품 관리 페이지로 이동
+        alert('관리자로 인증되었습니다. 상품 관리 페이지로 이동합니다.');
+        window.location.href = '/product/admin'; // 적절한 상품 관리 페이지 URL로 변경
+    } else {
+        // 인증 실패 시, 홈 페이지로 이동
+        alert('인증코드가 올바르지 않습니다. 다시 시도해주세요.');
+        window.location.href = '/'; // 적절한 홈 페이지 URL로 변경
+    }
+});
+function refreshCaptcha() {
       $('#captchaImg').attr('src', '/captcha?' + Date.now());
     }
-  </script>
+    </script>
 
-</body>
-</html>
+  </div>
+</header>
