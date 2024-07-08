@@ -4,26 +4,25 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Board_Enter</title>
+  <title>board_enter</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
-
-
 </head>
 
-<body class="board-page">
+<body class="board-enter-page">
 
-<%- include('../menu.html') %>
+  <%- include('../menu.html') %>
 
   <main class="main">
 
     <!-- Page Title -->
-    <div class="page-title dark-background" data-aos="fade">
+    <div class="page-title dark-background" data-aos="fade" >
       <div class="container position-relative">
-        <h1>게시글 작성</h1>
+        <h1>게시글 등록</h1>
+        <p>공지사항, 민원, Q&A를 등록하세요</p>
         <nav class="breadcrumbs">
           <ol>
-            <li><a href="index.ejs">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li class="current">게시글 등록</li>
           </ol>
         </nav>
@@ -40,7 +39,7 @@
           <div class="form-group">
               <label for="boardtype">게시글 유형</label>
               <select class="form-select" id="boardtype" name="boardtype" placeholder="게시글 유형을 선택하세요">
-                <option value="공지사항">공지사항</option>
+                <option value="공지사항" <%= (role !== 'admin') ? 'disabled' : '' %>>공지사항</option>
                 <option value="질문하기">질문하기</option>
                 <option value="민원작성하기">민원작성하기</option>
                 <option value="기타">기타</option>
@@ -82,7 +81,7 @@
     </section><!-- /Contact Section -->
 
   </main>
-
+  <%- include('../footer.html') %>
 </body>
 
 </html>
