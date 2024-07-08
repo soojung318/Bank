@@ -11,15 +11,15 @@
 
   <%- include('menu.html') %>
 
-  <% if(typeof data != 'undefined' && data.alertMsg){ %>
+ 
+</head>
+
+<body class="index-page">
+ <% if(typeof data != 'undefined' && data.alertMsg){ %>
     <script>
       alert(`<%= data.alertMsg %>`) ;
     </script>            
   <% } %>
-</head>
-
-<body class="index-page">
-
   <main class="main">
 
     <!-- Hero Section -->
