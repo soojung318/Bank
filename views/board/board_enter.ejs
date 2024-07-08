@@ -14,7 +14,11 @@
   <%- include('../menu.html') %>
 
   <main class="main">
-
+    <% if(typeof data != 'undefined' && data.alertMsg){ %>
+      <script>
+        alert(`<%= data.alertMsg %>`);
+      </script>
+      <% } %>
     <!-- Page Title -->
     <div class="page-title dark-background" data-aos="fade" >
       <div class="container position-relative">
@@ -39,7 +43,7 @@
           <div class="form-group">
               <label for="boardtype">게시글 유형</label>
               <select class="form-select" id="boardtype" name="boardtype" placeholder="게시글 유형을 선택하세요">
-                <option value="공지사항" <%= (role !== 'admin') ? 'disabled' : '' %>>공지사항</option>
+                <option value="공지사항" <%= (data.role !== 'admin') ? 'disabled' : '' %>>공지사항</option>
                 <option value="질문하기">질문하기</option>
                 <option value="민원작성하기">민원작성하기</option>
                 <option value="기타">기타</option>
