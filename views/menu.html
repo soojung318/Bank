@@ -59,15 +59,19 @@
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
 
-    <span id="loginSpan">
+    <span id="loginSpan" class="ms-auto">
       <form action="/account/login" method="post">
-          ID <input size="3" name="userid"> 
-          PW <input size="3" name="userpw"> 
-          <input type="submit" value="login" class="btn btn-outline-warning">
-        </form>
-      </span>
-
-    <a class="btn-getstarted" href="/account/enter">회원가입</a>
+        <input type="text" name="userid" placeholder="ID" class="me-2">
+        <input type="password" name="userpw" placeholder="PW" class="me-2">
+        <input type="text" name="captcha" placeholder="CAPTCHA 입력" class="me-2">
+        <div>
+          <img id="captchaImg" src="/captcha" alt="CAPTCHA">
+          <button type="button" onclick="refreshCaptcha()">Refresh</button>
+        </div>
+        <input type="submit" value="Login" class="btn btn-outline-warning me-2">
+      </form>
+      <a class="btn-getstarted" href="/account/enter">회원가입</a>
+    </span>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -121,6 +125,9 @@ document.getElementById('productAdminLink').addEventListener('click', function(e
         window.location.href = '/'; // 적절한 홈 페이지 URL로 변경
     }
 });
+function refreshCaptcha() {
+      $('#captchaImg').attr('src', '/captcha?' + Date.now());
+    }
     </script>
 
   </div>

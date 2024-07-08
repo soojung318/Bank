@@ -2,7 +2,12 @@ const setup = require('./db_setup');
 const express = require("express");
 const path = require("path");
 const dotenv = require("dotenv").config();
+<<<<<<< HEAD
 const assetRouter = require("./routes/assetManagement");
+=======
+const https = require("https");
+const fs = require("fs");
+>>>>>>> 37218b838f626ae8bfacf2f6046e6c3c01c43b6e
 
 const app = express();
 
