@@ -27,12 +27,28 @@
         </nav>
       </div>
     </div><!-- End Page Title -->
-    <table class="table table-hover text-center container mt-4" style="border-collapse: collapse;">
-      <thead>
-        <tr style="border-bottom: 1px solid #dee2e6;">
-          </tr>
-      </thead>
-      <tbody>
+    <div class="container">
+      <div class="row my-3">
+          <div class="col-md-6">
+              <div class="input-group">
+                <select class="form-select" id="searchField" style="width: 25%;">
+                      <option value="boardtype">게시글 유형</option>
+                      <option value="title">제목</option>
+                      <option value="content">내용</option>
+                      <option value="id">작성자</option>
+                  </select>
+                  <input class="form-control sword" type="search" placeholder="검색어 입력" id="searchQuery" style="width: 60%;">
+                  <button class="btn btn-success input-group-append sbtn" style="width: 15%;" onclick="search()">검색하기</button>
+              </div>
+          </div>
+      </div>
+      <table class="table table-hover text-center mt-4" style="border-collapse: collapse;">
+          <thead>
+              <tr style="border-bottom: 1px solid #dee2e6;">
+                  
+              </tr>
+          </thead>
+          <tbody id="resultsTable">
         <% for(let i = 0; i < data.length; i++){ %>
           <tr style="border-top: 1px solid #dee2e6;">
             <td><%= data[i].boardtype %></td>
@@ -41,7 +57,12 @@
             </td>
             <td><%= data[i].id %></td>
             <td><%= data[i].date %></td>
-            <td <% if(data[i].answer==1){ %> disabled <% } %>><button class="answer btn btn-outline-primary" data-id="<%= data[i]._id %>">답변하기</button></td>
+            <td <% if(data.answer === 'null'){ %> disabled <% } %>>
+              <a href="#" 
+                 onclick="modal_content(`<%= data[i]._id %>`,`<%= data[i].title %>`,`<%= data[i].content %>`, `<%= data[i].date %>`, `<%= data[i].path %>`)">
+                답변하기
+              </a>
+            </td>
             <td><button class="delete btn btn-outline-danger" data-id="<%= data[i]._id %>">삭제</button></td>
           </tr>
           <% } %>
@@ -77,9 +98,11 @@
       $("#postTitle").text(`${modalData.title}`);
       $("#postContent").html(`${modalData.content}`);
       $("#postDate").text(`${modalData.date}`);
-      $("#postImg").html(`<img width='300' src='/image/${modalData.path}'> `);
+      $("#postImg").html(`<img width='300' src='../public/image/${modalData.path}'> `);
+      $("#postAnswer").text(`${modalData.answer}`);
       $("#updateSpan").html(`<button type="button" class="btn btn-info" onclick="editDisplay()">수정하러가기</button>`);
     }
+   
 
     function editDisplay() {
       //console.log(modalData._id, modalData.title, modalData.content, modalData.date);
@@ -87,18 +110,58 @@
       $("#postTitle").html(`<input value='${modalData.title}' name='title'>`);
       $("#postContent").html(`<textarea name='content'>${modalData.content}</textarea>`);
       $("#postDate").html(`<input type='date' value='${modalData.date}' name='someDate'>`);
+      $("#postAnswer").html(`<textarea name='content'>${modalData.answer}</textarea>`);
       $("#updateSpan").html(`<button type="button" class="btn btn-warning" >수정</button>`);
     }
     function answerDisplay() {
       //console.log(modalData._id, modalData.title, modalData.content, modalData.date);
       $("#hiddenSpan").html(`<input  type='hidden' value='${modalData._id}' name='_id'>`);
-      $("#postTitle").html(`<input value='' name='title'>`);
-      $("#postContent").html(`<textarea name='content'></textarea>`);
-      $("#postDate").html(`<input type='date' value='' name='someDate'>`);
+      $("#postTitle").text(modalData.title); // 제목을 텍스트로 표시
+      $("#postContent").html(modalData.content); // 내용을 텍스트로 표시
+      $("#postDate").text(modalData.date); // 날짜를 텍스트로 표시
+      $("#postAnswer").html(`<textarea name='content'></textarea>`);
       $("#answerSpan").html(`<button type="submit" class="btn btn-warning" >완료</button>`);
       // 버튼 클릭 이벤트 리스너 설정
     }
+    function search() {
+        const field = document.getElementById('searchField').value;
+        const query = document.getElementById('searchQuery').value;
 
+        $.ajax({
+            type: 'GET',
+            url: '/search',
+            data: { field: field, query: query },
+            success: function(data) {
+                updateTable(data);
+            },
+            error: function(error) {
+                console.error("Error fetching search results:", error);
+            }
+        });
+    }
+    function updateTable(data) {
+        const tableBody = $("#resultsTable");
+        tableBody.empty();
+
+        if (data.length === 0) {
+            tableBody.append('<tr><td colspan="6">검색 결과가 없습니다.</td></tr>');
+            return;
+        }
+
+        data.forEach(post => {
+            const row = `<tr style="border-top: 1px solid #dee2e6;">
+                <td>${post.boardtype}</td>
+                <td data-bs-toggle="modal" data-bs-target="#myModal">
+                    <a href="#" onclick="modal_content('${post._id}','${post.title}','${post.content}','${post.date}','${post.path}')">${post.title}</a>
+                </td>
+                <td>${post.id}</td>
+                <td>${post.date}</td>
+                <td>${post.answer}</td>
+                <td><button class="delete btn btn-outline-danger" data-id="${post._id}">삭제</button></td>
+            </tr>`;
+            tableBody.append(row);
+        });
+    }
     $(document).ready(function() {
     $("#updateSpan").on("click", "button", function() {
         if (confirm("정말로 수정하시겠습니까?")) {
@@ -152,55 +215,9 @@
       //   });
     
     });
-    /* $(".answer").click(function (e) {
-      
-      let postId = e.target.dataset.id;
     
-      answerDisplay(postId);
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = "/post/answer";
-      
-      const post_id_input = document.createElement("input");
-      post_id_input.type = "hidden";
-      post_id_input.name = "_id";
-      post_id_input.value = postId;
-      form.appendChild(post_id_input); 
-      
-      // 동적으로 생성한 폼 요소를 DOM에 추가
-      document.body.appendChild(form);
 
-      //console.log(form);        
-      form.submit();
 
-    }); */
-    $(document).ready(function() {
-  $(".answer").click(function(e) {
-    e.preventDefault();
-    let postId = $(this).data("id");
-    $("#postId").val(postId); // Set the postId value in the hidden input field
-    $("#answerModal").modal("show"); // Show the modal
-  });
-
-  $("#answerForm").submit(function(e) {
-    e.preventDefault();
-    let form = $(this);
-    $.ajax({
-      type: form.attr("method"),
-      url: form.attr("action"),
-      data: form.serialize(),
-      success: function(response) {
-        console.log("Answer submitted successfully:", response);
-        $("#answerModal").modal("hide"); // Hide the modal after successful submission
-        // Optionally, update UI or perform other actions after submission
-      },
-      error: function(error) {
-        console.error("Error submitting answer:", error);
-        // Handle errors if necessary
-      }
-    });
-  });
-});
 
       
   </script>
@@ -225,6 +242,8 @@
             <div>작성일 : <span id="postDate"></span></div>
             <p></p>
             <div>첨부이미지: <span id="postImg"></span></div>
+            <p></p>
+            <div>답변: <span id="postAnswer"></span></div>
           </div>
 
           <!-- Modal footer -->
@@ -238,6 +257,7 @@
       </div>
     </div>
   </form>
+
   <!-- The Modal -->
   <form action="/post/answer" method="post">
     <span id="hiddenSpan"></span>
@@ -248,24 +268,25 @@
         <!-- Modal Header -->
         <div class="modal-header">
           <h4 class="modal-title">답변하기</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
 
         <!-- Modal Body -->
         <div class="modal-body">
-            <input type="hidden" name="_id" id="postId">
-            <div class="form-group">
-              <label for="answerTitle">Title:</label>
-              <input type="text" class="form-control" id="answerTitle" name="title">
-            </div>
-            <div class="form-group">
-              <label for="answerContent">Content:</label>
-              <textarea class="form-control" id="answerContent" name="content"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+          <div>내용 : <span id="postContent"></span></div>
+          <p></p>
+          <div>작성일 : <span id="postDate"></span></div>
+          <p></p>
+          <div>첨부이미지: <span id="postImg"></span></div>
+          <p></p>
+          <div>답변: <span id="postAnswer"></span></div>
+          <p></p>
         </div>
-
+        <div class="modal-footer">
+          <span id="updateSpan" >
+            <button type="button" class="btn btn-info" onclick="answerDisplay()">답변하러가기</button>
+          </span>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>

@@ -27,29 +27,47 @@
         </nav>
       </div>
     </div><!-- End Page Title -->
-    <table class="table table-hover text-center container mt-4" style="border-collapse: collapse;">
-      <thead>
-        <tr style="border-bottom: 1px solid #dee2e6;">
-          <div class="container my-3">
-            <a href="#" class="board_enter btn btn-primary" style="float:right">글쓰기</a>>
+    <div class="container">
+      <div class="row my-3">
+          <div class="col-md-6">
+              <div class="input-group">
+                <select class="form-select" id="searchField" style="width: 25%;">
+                      <option value="boardtype">게시글 유형</option>
+                      <option value="title">제목</option>
+                      <option value="content">내용</option>
+                      <option value="id">작성자</option>
+                  </select>
+                  <input class="form-control sword" type="search" placeholder="검색어 입력" id="searchQuery" style="width: 60%;">
+                  <button class="btn btn-success input-group-append sbtn" style="width: 15%;" onclick="search()">검색하기</button>
+              </div>
           </div>
-          </tr>
-      </thead>
-      <tbody>
-        <% for(let i = 0; i < data.length; i++){ %>
-          <tr style="border-top: 1px solid #dee2e6;">
-            <td><%= data[i].boardtype %></td>
-            <td data-bs-toggle="modal" data-bs-target="#myModal">
-              <a href="#" onclick="modal_content(`<%= data[i]._id %>`,`<%= data[i].title %>`,`<%= data[i].content %>`, `<%= data[i].date %>`, `<%= data[i].path %>`)"><%= data[i].title %></a>
-            </td>
-            <td><%= data[i].id %></td>
-            <td><%= data[i].date %></td>
-            <td><%= data[i].answer %></td>
-            <td><button class="delete btn btn-outline-danger" data-id="<%= data[i]._id %>">삭제</button></td>
-          </tr>
-          <% } %>
-      </tbody>
-  </table>
+          <div class="col-md-6 text-end">
+              <a href="#" class="board_enter btn btn-primary">글쓰기</a>
+          </div>
+      </div>
+      <table class="table table-hover text-center mt-4" style="border-collapse: collapse;">
+          <thead>
+              <tr style="border-bottom: 1px solid #dee2e6;">
+                  
+              </tr>
+          </thead>
+          <tbody id="resultsTable">
+              <% for(let i = 0; i < data.length; i++){ %>
+              <tr style="border-top: 1px solid #dee2e6;">
+                  <td><%= data[i].boardtype %></td>
+                  <td data-bs-toggle="modal" data-bs-target="#myModal">
+                      <a href="#" onclick="modal_content('<%= data[i]._id %>', '<%= data[i].title %>', '<%= data[i].content %>', '<%= data[i].date %>', '<%= data[i].path %>')"><%= data[i].title %></a>
+                  </td>
+                  <td><%= data[i].id %></td>
+                  <td><%= data[i].date %></td>
+                  <td><%= data[i].answer %></td>
+                  <td <% if(data[i].answer !== 'null'){ %> disabled <% } %>>답변완료</td>
+                  <td><button class="delete btn btn-outline-danger" data-id="<%= data[i]._id %>">삭제</button></td>
+              </tr>
+              <% } %>
+          </tbody>
+      </table>
+  </div>
   <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
       <% if (currentPage > 1) { %>
@@ -97,7 +115,49 @@
       $("#updateSpan").html(`<button type="submit" class="btn btn-warning" >수정</button>`);
     }
 
-    $(".delete").click(function (e) {
+    
+
+    function search() {
+        const field = document.getElementById('searchField').value;
+        const query = document.getElementById('searchQuery').value;
+
+        $.ajax({
+            type: 'GET',
+            url: '/search',
+            data: { field: field, query: query },
+            success: function(data) {
+                updateTable(data);
+            },
+            error: function(error) {
+                console.error("Error fetching search results:", error);
+            }
+        });
+    }
+
+    function updateTable(data) {
+        const tableBody = $("#resultsTable");
+        tableBody.empty();
+
+        if (data.length === 0) {
+            tableBody.append('<tr><td colspan="6">검색 결과가 없습니다.</td></tr>');
+            return;
+        }
+
+        data.forEach(post => {
+            const row = `<tr style="border-top: 1px solid #dee2e6;">
+                <td>${post.boardtype}</td>
+                <td data-bs-toggle="modal" data-bs-target="#myModal">
+                    <a href="#" onclick="modal_content('${post._id}','${post.title}','${post.content}','${post.date}','${post.path}')">${post.title}</a>
+                </td>
+                <td>${post.id}</td>
+                <td>${post.date}</td>
+                <td>${post.answer}</td>
+                <td><button class="delete btn btn-outline-danger" data-id="${post._id}">삭제</button></td>
+            </tr>`;
+            tableBody.append(row);
+        });
+    }
+      $(".delete").click(function (e) {
       
       let sid = e.target.dataset.id;
       
@@ -118,7 +178,7 @@
 
       //console.log(form);        
       form.submit();
-
+      updateTable(result.updatedData); // 서버에서 업데이트된 데이터를 받아와서 테이블을 업데이트
       // $.ajax({
       //   type: "post",
       //   url: "/post/delete",
@@ -136,8 +196,6 @@
       //   });
     
     });
-
-      
   </script>
 
   <!-- The Modal -->

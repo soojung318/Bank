@@ -7,7 +7,7 @@ const multer = require('multer');
 
 const storage=multer.diskStorage({
   destination: (req, file, done) => {
-  done(null, '/image')
+  done(null, './public/image')
   }, filename: (req, file, done) => {
     done(null, file.originalname)
   }, limit : 5*1024*1024
@@ -173,14 +173,15 @@ router.post("/post/save", async (req, res) => {
         mongodb
         .collection("post")
           .insertOne({
+            boardtype:req.body.boardtype,
             id: req.body.id,
             title: req.body.title,
             content: req.body.content,
             date: new Date(),
-            path:imagepath
+            path:imagepath,
+            answer:0
           })
         .then((result) => {
-          //console.log(result);
           console.log("데이터 추가 성공");
           delete req.session.csrf_token;
           list(mongodb, req, res);
@@ -212,7 +213,7 @@ router.get("/board/board_enter", function (req, res) {
       csrf_token: req.session.csrf_token
     });
   } else {
-    res.redirect("index.ejs", { data: { alertMsg: "로그인 먼저 해주세요" } });
+    res.render("index.ejs", { data: { alertMsg: "로그인 먼저 해주세요" } });
   }
 });
 
@@ -246,34 +247,35 @@ router.get("/board/admin_board", async (req, res) => {
     res.render("index.ejs", { data: { alertMsg: "로그인이 필요합니다." } });
   }
 });
-////답변 안된 게시물만 답변해주기. 관리자 권한 확인.
+
+// 답변 안 된 게시물만 답변해주기. 관리자 권한 확인.
 router.post("/post/answer", async (req, res) => {
   //console.log(req.body, "\n===============");
-  const answer=0;
-  if (req.session.user&&req.session.user.role=='admin') {
+  if (req.session.user && req.session.user.role == 'admin') {
     // 로그인 된 사용자라면&관리자라면
     const { mongodb } = await setup();
-    
+    const answer=null;
     mongodb
       .collection("post")
-      .findOne({  _id: new ObjectId(req.body._id), answer: { $exists: false } }) //답변이 안된건 지 확인
+      .findOne({ _id: new ObjectId(req.body._id), answer: { $exists: false } }) // 답변이 안된 건지 확인
       .then((result) => {
         //console.log(result, "\n", req.session);
-        answer=1;
         if (result) {
           mongodb
-            .collection("answer")
-            .insertOne({ _id: new ObjectId(req.body._id) }, { $set: { anwer_title: req.body.title, answer_content: req.body.content, answer_date: req.body.someDate } })
-            .then((result) => {
+            .collection("post")
+            .updateOne(
+              { _id: new ObjectId(req.body._id) },
+              { $set: {answer:answer } }
+            )
+            .then((updateResult) => {
               console.log("답변 완료");
-              
               list(mongodb, req, res);
             })
             .catch((err) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("index.ejs", { data: { alertMsg: "이미 답변이 작성된 글입니다 " } });
+          res.render("index.ejs", { data: { alertMsg: "이미 답변이 작성된 글입니다" } });
         }
       })
       .catch((err) => {
@@ -284,6 +286,7 @@ router.post("/post/answer", async (req, res) => {
     res.render("index.ejs", { data: { alertMsg: "관리자 권한이 필요합니다. 로그인 후 다시 시도해주세요." } });
   }
 });
+
 router.get('/product/product_list', async function (req, res) {
   const { mongodb } = await setup();
   mongodb.collection('product').find().toArray()
