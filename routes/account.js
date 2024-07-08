@@ -2,6 +2,15 @@ const router = require('express').Router();
 const setup = require('../db_setup');
 
 const sha = require('sha256');
+const svgCaptcha = require('svg-captcha');
+
+// CAPTCHA 이미지 생성
+router.get('/captcha', (req, res) => {
+  const captcha = svgCaptcha.create();
+  req.session.captcha = captcha.text;
+  res.type('svg');
+  res.status(200).send(captcha.data);
+});
 
 // 로그아웃 처리
 router.get('/account/logout', (req, res) => {
@@ -11,6 +20,10 @@ router.get('/account/logout', (req, res) => {
 
 // 로그인 처리
 router.post("/account/login", async (req, res) => {
+if (req.body.captcha !== req.session.captcha) {
+    return res.render('index.ejs', { data: { alertMsg: 'CAPTCHA 확인 실패. 다시 시도해주세요.' } });
+  }
+
   const { mongodb, mysqldb } = await setup();
   try {
     const result = await mongodb.collection("account").findOne({ userid: req.body.userid });
@@ -109,6 +122,7 @@ router.post('/account/save', async (req, res) => {
 router.get('/account/enter', (req, res) => {
   res.render('login_enter.ejs');
 });
+
 const pw_check = (password) => {
   var check = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/; //정규식으로 비밀번호 체크
  

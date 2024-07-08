@@ -19,6 +19,14 @@
   <!-- Main CSS File -->
   <link href="/css/main.css" rel="stylesheet">
 
+  <!-- =======================================================
+  * Template Name: Logis
+  * Template URL: https://bootstrapmade.com/logis-bootstrap-logistics-website-template/
+  * Updated: Jun 27 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+
  <header id="header" class="header d-flex align-items-center fixed-top">
   <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
@@ -48,15 +56,20 @@
       </ul>
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
-    <span id="loginSpan">
-      <form action="/account/login" method="post">
-          ID <input size="3" name="userid"> 
-          PW <input size="3" name="userpw"> 
-          <input type="submit" value="login" class="btn btn-outline-warning">
-        </form>
-      </span>
 
-    <a class="btn-getstarted" href="/account/enter">회원가입</a>
+    <span id="loginSpan" class="ms-auto">
+      <form action="/account/login" method="post">
+        <input type="text" name="userid" placeholder="ID" class="me-2">
+        <input type="password" name="userpw" placeholder="PW" class="me-2">
+        <input type="text" name="captcha" placeholder="CAPTCHA 입력" class="me-2">
+        <div>
+          <img id="captchaImg" src="/captcha" alt="CAPTCHA">
+          <button type="button" onclick="refreshCaptcha()">Refresh</button>
+        </div>
+        <input type="submit" value="Login" class="btn btn-outline-warning me-2">
+      </form>
+      <a class="btn-getstarted" href="/account/enter">회원가입</a>
+    </span>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -110,6 +123,9 @@ document.getElementById('productAdminLink').addEventListener('click', function(e
         window.location.href = '/'; // 적절한 홈 페이지 URL로 변경
     }
 });
+function refreshCaptcha() {
+      $('#captchaImg').attr('src', '/captcha?' + Date.now());
+    }
     </script>
 
   </div>
