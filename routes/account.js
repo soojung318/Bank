@@ -2,6 +2,15 @@ const router = require('express').Router();
 const setup = require('../db_setup');
 
 const sha = require('sha256');
+const svgCaptcha = require('svg-captcha');
+
+// CAPTCHA 이미지 생성
+router.get('/captcha', (req, res) => {
+  const captcha = svgCaptcha.create();
+  req.session.captcha = captcha.text;
+  res.type('svg');
+  res.status(200).send(captcha.data);
+});
 
 // 로그아웃 처리
 router.get('/account/logout', (req, res) => {
@@ -10,43 +19,44 @@ router.get('/account/logout', (req, res) => {
 });
 
 // 로그인 처리
-router.post("/account/login", async (req, res) => {
+router.post('/account/login', async (req, res) => {
+  if (req.body.captcha !== req.session.captcha) {
+    return res.render('index.ejs', { data: { alertMsg: 'CAPTCHA 확인 실패. 다시 시도해주세요.' } });
+  }
+
   const { mongodb, mysqldb } = await setup();
   mongodb
-    .collection("account")
+    .collection('account')
     .findOne({ userid: req.body.userid })
     .then((result) => {
       if (result) {
-        const sql = `SELECT salt FROM UserSalt 
-                    WHERE userid=?`;
+        const sql = `SELECT salt FROM UserSalt WHERE userid=?`;
         mysqldb.query(sql, [req.body.userid], (err, rows, fields) => {
           if (err) {
-            res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
+            res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요' } });
             return;
           }
           try {
             const salt = rows[0].salt;
             const hashPw = sha(req.body.userpw + salt);
-            //  console.log(hashPw);
             if (result.userpw == hashPw) {
               req.body.userpw = hashPw;
               req.session.user = req.body;
-              //console.log(req.session.user);
-              res.cookie("uid", req.body.userid);
-              res.render("index.ejs");
+              res.cookie('uid', req.body.userid);
+              res.render('index.ejs');
             } else {
-              res.render("index.ejs", { data: { alertMsg: '다시 로그인 해주세요' } });
+              res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요' } });
             }
           } catch (err) {
-            res.render("index.ejs", {data:{alertMsg:'다시 로그인 해주세요'}});
+            res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요' } });
           }
         });
       } else {
-        res.render("index.ejs", {data:{alertMsg:'다시 로그인 해주세요'}});
+        res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요' } });
       }
     })
     .catch((err) => {
-      res.render("index.ejs", {data:{alertMsg:'다시 로그인 해주세요'}});
+      res.render('index.ejs', { data: { alertMsg: '다시 로그인 해주세요' } });
     });
 });
 
