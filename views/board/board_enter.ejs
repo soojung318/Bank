@@ -14,7 +14,11 @@
   <%- include('../menu.html') %>
 
   <main class="main">
-
+    <% if(typeof data != 'undefined' && data.alertMsg){ %>
+      <script>
+        alert(`<%= data.alertMsg %>`);
+      </script>
+      <% } %>
     <!-- Page Title -->
     <div class="page-title dark-background" data-aos="fade" >
       <div class="container position-relative">

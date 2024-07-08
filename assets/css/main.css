@@ -2003,10 +2003,11 @@ section,
 /*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/
+
 #loginSpan {
   display: flex;
   align-items: center;
-  height: 60px;
+  height: 60px; /* 원하는 높이로 조정 */
 }
 
 #loginSpan form {
@@ -2019,11 +2020,10 @@ section,
 #loginSpan input[type="submit"],
 #loginSpan .btn-getstarted {
   margin-right: 10px;
-  padding: 8px;
+  padding: 8px; 
   font-size: 14px;
   width: 120px;
 }
-
 #loginSpan div {
   background-color: white;
   display: flex;

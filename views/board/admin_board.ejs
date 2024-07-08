@@ -15,7 +15,7 @@
   <main class="main">
 
     <!-- Page Title -->
-    <div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.jpg);">
+    <div class="page-title dark-background" data-aos="fade">
       <div class="container position-relative">
         <h1>게시판 관리</h1>
         <p>게시글을 수정,삭제,답변할 수 있습니다</p>
@@ -51,19 +51,21 @@
           <tbody id="resultsTable">
         <% for(let i = 0; i < data.length; i++){ %>
           <tr style="border-top: 1px solid #dee2e6;">
-            <td><%= data[i].boardtype %></td>
-            <td data-bs-toggle="modal" data-bs-target="#myModal">
-              <a href="#" onclick="modal_content(`<%= data[i]._id %>`,`<%= data[i].title %>`,`<%= data[i].content %>`, `<%= data[i].date %>`, `<%= data[i].path %>`)"><%= data[i].title %></a>
-            </td>
-            <td><%= data[i].id %></td>
-            <td><%= data[i].date %></td>
-            <td <% if(data.answer === 'null'){ %> disabled <% } %>>
-              <a href="#" 
-                 onclick="modal_content(`<%= data[i]._id %>`,`<%= data[i].title %>`,`<%= data[i].content %>`, `<%= data[i].date %>`, `<%= data[i].path %>`)">
-                답변하기
-              </a>
-            </td>
-            <td><button class="delete btn btn-outline-danger" data-id="<%= data[i]._id %>">삭제</button></td>
+              <tr>
+                <td style="width: 10%;"><%= data[i].boardtype %></td>
+                <td style="width: 10%;"><%= data[i].id %></td>
+                <td style="width: 15%;" data-bs-toggle="modal" data-bs-target="#myModal">
+                    <a href="#" onclick="modal_content('<%= data[i]._id %>', '<%= data[i].title %>', '<%= data[i].content %>', '<%= data[i].date %>', '<%= data[i].path %>','<%= data[i].answer %>')"><%= data[i].title %></a>
+                </td>
+                <td style="width: 40%;"><%= data[i].content %></td>
+                <td><%= data[i].date %></td>
+                <td <% if(data[i].answer !== "null"){ %> disabled <% } %> data-bs-toggle="modal" data-bs-target="#answerModal">
+                  <a href="#" onclick="modal_answercontent('<%= data[i]._id %>','<%= data[i].title %>','<%= data[i].content %>','<%= data[i].date %>','<%= data[i].path %>','<%= data[i].answer %>')">답변하기</a>
+              </td>
+              
+                <td><button class="delete btn btn-outline-danger" data-id="<%= data[i]._id %>">삭제</button></td>
+              </tr>
+          
           </tr>
           <% } %>
       </tbody>
@@ -98,12 +100,10 @@
       $("#postTitle").text(`${modalData.title}`);
       $("#postContent").html(`${modalData.content}`);
       $("#postDate").text(`${modalData.date}`);
-      $("#postImg").html(`<img width='300' src='../public/image/${modalData.path}'> `);
+      $("#postImg").html(`<img width='300' src='/image/${modalData.path}'> `);
       $("#postAnswer").text(`${modalData.answer}`);
       $("#updateSpan").html(`<button type="button" class="btn btn-info" onclick="editDisplay()">수정하러가기</button>`);
     }
-   
-
     function editDisplay() {
       //console.log(modalData._id, modalData.title, modalData.content, modalData.date);
       $("#hiddenSpan").html(`<input  type='hidden' value='${modalData._id}' name='_id'>`);
@@ -113,16 +113,31 @@
       $("#postAnswer").html(`<textarea name='content'>${modalData.answer}</textarea>`);
       $("#updateSpan").html(`<button type="button" class="btn btn-warning" >수정</button>`);
     }
-    function answerDisplay() {
+    function modal_answercontent(_id, title, content, date, path) {
+      modalData = { _id, title, content, date, path };
+      $("#postTitle").text(`${modalData.title}`);
+      $("#postContent").html(`${modalData.content}`);
+      $("#postDate").text(`${modalData.date}`);
+      $("#postImg").html(`<img width='300' src='/image/${modalData.path}'> `);
+      $("#postAnswer").text(`${modalData.answer}`);
+      $("#updateSpan").html(`<button type="button" class="btn btn-info" onclick="editDisplay()">답변하러가기</button>`);
+    }
+   function answerDisplay() {
       //console.log(modalData._id, modalData.title, modalData.content, modalData.date);
       $("#hiddenSpan").html(`<input  type='hidden' value='${modalData._id}' name='_id'>`);
-      $("#postTitle").text(modalData.title); // 제목을 텍스트로 표시
-      $("#postContent").html(modalData.content); // 내용을 텍스트로 표시
-      $("#postDate").text(modalData.date); // 날짜를 텍스트로 표시
-      $("#postAnswer").html(`<textarea name='content'></textarea>`);
+      $("#Title").text(modalData.title); // 제목을 텍스트로 표시
+      $("#Content").html(modalData.content); // 내용을 텍스트로 표시
+      $("#Date").text(modalData.date); // 날짜를 텍스트로 표시
+      $("#Answer").html(`<textarea name='answer'>${modalData.answer}</textarea>`);
       $("#answerSpan").html(`<button type="submit" class="btn btn-warning" >완료</button>`);
       // 버튼 클릭 이벤트 리스너 설정
     }
+    function search() {
+        const field = document.getElementById('searchField').value;
+        const query = document.getElementById('searchQuery').value;
+
+    
+    
     function search() {
         const field = document.getElementById('searchField').value;
         const query = document.getElementById('searchQuery').value;
@@ -157,7 +172,6 @@
                 <td>${post.id}</td>
                 <td>${post.date}</td>
                 <td>${post.answer}</td>
-                <td><button class="delete btn btn-outline-danger" data-id="${post._id}">삭제</button></td>
             </tr>`;
             tableBody.append(row);
         });
@@ -222,55 +236,19 @@
       
   </script>
 
-  <!-- The Modal -->
-  <form action="/post/admin_update" method="post">
-    <span id="hiddenSpan"></span>
-    <div class="modal" id="myModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <!-- Modal Header -->
-          <div class="modal-header">
-            제목 :
-            <div><h4 class="modal-title" id="postTitle"></h4></div>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-
-          <!-- Modal body -->
-          <div class="modal-body">
-            <div>내용 : <span id="postContent"></span></div>
-            <p></p>
-            <div>작성일 : <span id="postDate"></span></div>
-            <p></p>
-            <div>첨부이미지: <span id="postImg"></span></div>
-            <p></p>
-            <div>답변: <span id="postAnswer"></span></div>
-          </div>
-
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <span id="updateSpan" >
-              <button type="button" class="btn btn-info" onclick="editDisplay()">수정하러가기</button>
-            </span>
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </form>
-
-  <!-- The Modal -->
-  <form action="/post/answer" method="post">
-    <span id="hiddenSpan"></span>
-  <div class="modal" id="answerModal">
+  <!-- 첫 번째 모달 -->
+<form action="/post/admin_update" method="post">
+  <span id="hiddenSpan"></span>
+  <div class="modal" id="myModal">
     <div class="modal-dialog">
       <div class="modal-content">
-
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">답변하기</h4>
+          제목 :
+          <div><h4 class="modal-title" id="postTitle"></h4></div>
         </div>
 
-        <!-- Modal Body -->
+        <!-- Modal body -->
         <div class="modal-body">
           <div>내용 : <span id="postContent"></span></div>
           <p></p>
@@ -279,10 +257,46 @@
           <div>첨부이미지: <span id="postImg"></span></div>
           <p></p>
           <div>답변: <span id="postAnswer"></span></div>
-          <p></p>
         </div>
+
+        <!-- Modal footer -->
         <div class="modal-footer">
           <span id="updateSpan" >
+            <button type="button" class="btn btn-info" onclick="editDisplay()">수정하러가기</button>
+          </span>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- 두 번째 모달 -->
+<form action="/post/answer" method="post">
+  <span id="hiddenSpan"></span>
+  <div class="modal" id="answerModal">
+    <div class="modal-dialog">
+      <div class="modal-answercontent">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          제목 :
+          <div><h4 class="modal-title" id="postTitle"></h4></div>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div>내용 : <span id="postContent"></span></div>
+          <p></p>
+          <div>작성일 : <span id="postDate"></span></div>
+          <p></p>
+          <div>첨부이미지: <span id="postImg"></span></div>
+          <p></p>
+          <div>답변: <span id="postAnswer"></span></div>
+        </div>
+
+        <div class="modal-footer">
+          <span id="answerSpan" >
             <button type="button" class="btn btn-info" onclick="answerDisplay()">답변하러가기</button>
           </span>
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -291,6 +305,7 @@
     </div>
   </div>
 </form>
+
    
   <%- include('../footer.html') %>
 </body>

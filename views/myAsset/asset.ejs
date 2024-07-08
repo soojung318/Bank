@@ -2,172 +2,175 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>자산관리</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>자산관리</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+</head>
 
-  <main class="main">
+<body>
+    <main class="main">
+        <%- include('../menu.html') %>
+            <div class="page-title dark-background" data-aos="fade"
+                style="background-image: url(assets/img/page-title-bg.jpg);">
+                <div class="container position-relative">
+                    <h1>자산관리</h1>
+                    <p>총 자산을 관리해 보세요</p>
+                    <nav class="breadcrumbs">
+                        <ol>
+                            <li><a href="index.html">입/출금</a></li>
+                            <li><a href="index.html">총자산</a></li><!--class="current"-->
+                        </ol>
+                    </nav>
+                </div>
+            </div><!-- End Page Title -->
 
-    <%- include('../menu.html') %>
+            <!-- <section id="pricing" class="pricing section">
+                <div class="container section-title" data-aos="fade-up">
+                    <span>금융자산</span>
+                    <h2>금융자산</h2>
+                    <p>님의 금융자산</p>로그인 사용자이름 data.userid
+                </div>End Section Title 
+            </section>/Pricing Section -->
 
-    <!-- Page Title -->
-    <div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.jpg);">
-      <div class="container position-relative">
-        <h1>자산관리</h1>
-        <p>총 자산을 관리해 보세요</p>
-        <nav class="breadcrumbs">
-          <ol>
-            <li><a href="index.html">입/출금</a></li>
-            <li><a href="index.html">총자산</a></li><!--class="current"-->
-          </ol>
-        </nav>
-      </div>
-    </div><!-- End Page Title -->
+            <section id="alt-pricing" class="alt-pricing section">
+                <div class="container section-title" data-aos="fade-up">
+                    <span>총자산<br></span>
+                    <h2>총자산</h2>
+                    <p>ooo님의 금융자산</p>
+                </div><!-- End Section Title -->
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="pricing section">
+                <div class="container">
+                    <div class="row gy-4 pricing-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="col-lg-3 d-flex align-items-center justify-content-center">
+                            <h3>총자산</h3>
+                        </div>
+                        <div class="col-lg-3 d-flex align-items-center justify-content-center">
+                            <h4><sup>₩</sup>
+                                <%= data[0].total %>
+                            </h4>
+                        </div>
+                        <div class="col-lg-3 d-flex align-items-center justify-content-center">
+                            <!-- Any additional info here -->
+                        </div>
+                        <div class="col-lg-3 d-flex align-items-center justify-content-center">
+                            <div class="text-center" style="margin-right:5px;"><a href="#" class="buy-btn deposit-btn"
+                                    data-id="<%= data[0]._id %>">입금</a></div>
+                            <div class="withdraw text-center"><a href="#" class="buy-btn withdraw-btn"
+                                    data-id="<%= data[0]._id %>">출금</a></div>
 
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <span>총자산</span>
-        <h2>총자산</h2>
-        <p>님의 총자산</p><!--로그인 사용자이름--><!--data.userid-->
-      </div><!-- End Section Title -->
+                        </div>
+                    </div><!-- End Pricing Item -->
+                </div>
+            </section><!-- /Alt Pricing Section -->
 
-      <div class="container">
+            <section id="alt-pricing" class="alt-pricing section">
+                <div class="container section-title" data-aos="fade-up">
+                    <span>거래내역<br></span>
+                    <h2>거래내역</h2>
+                    <p>거래내역을 확인합니다</p>
+                </div><!-- End Section Title -->
 
-        <div class="row gy-4">
+                <div class="container">
+                    <div class="row gy-4 pricing-item" data-aos="fade-up" data-aos-delay="100">
+                            <table class="table table-hover text-center container mt-4" >
+                                <thead>
+                                  <tr>
+                                    <th>구분</th>
+                                    <th>금액</th>
+                                    <th>내역</th>
+                                    <th>날짜</th>
+                                    <th>삭제</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <% for(let i=0; i < data.length; i++){ %>
+                                    <tr>
+                                      <td><a href="/content/<%= data[i]._id %>">
+                                          <%= data[i].classification %>
+                                        </a></td>
+                                      <td>
+                                        <%= data[i].withdraw %>
+                                      </td>
+                                      <td>
+                                        <%= data[i].transaction %>
+                                      </td>
+                                      <!-- <td><%= data[i].size %></td>
+                                      <td><%= data[i].num %></td> -->
+                                      <td>
+                                        <%= data[i].transactionDate %>
+                                      </td>
+                                      <td><button class='delete btn btn-outline-danger' data-id='<%= data[i]._id %>'>삭제</button></td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                              </table>
+                        </div>
+                    </div><!-- End Pricing Item -->
+                </div>
+            </section><!-- /Alt Pricing Section -->
+    </main>
 
-          <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
-            <div class="pricing-item">
-              <h3>Free Plan</h3>
-              <h4><sup>$</sup>0<span> / month</span></h4>
-              <ul>
-                <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-                <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-                <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-                <li class="na"><i class="bi bi-x"></i> <span>Pharetra massa massa ultricies</span></li>
-                <li class="na"><i class="bi bi-x"></i> <span>Massa ultricies mi quis hendrerit</span></li>
-              </ul>
-              <a href="#" class="buy-btn">Buy Now</a>
-            </div>
-          </div><!-- End Pricing Item -->
+    <%- include('../footer.html') %>
 
-          <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="200">
-            <div class="pricing-item featured">
-              <h3>Business Plan</h3>
-              <h4><sup>$</sup>29<span> / month</span></h4>
-              <ul>
-                <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-                <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-                <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-                <li><i class="bi bi-check"></i> <span>Pharetra massa massa ultricies</span></li>
-                <li><i class="bi bi-check"></i> <span>Massa ultricies mi quis hendrerit</span></li>
-              </ul>
-              <a href="#" class="buy-btn">Buy Now</a>
-            </div>
-          </div><!-- End Pricing Item -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('.deposit-btn').on('click', function () {
+                    const assetId = $(this).data('id');
+                    const amount = prompt("입금할 금액을 입력하세요:");
 
-          <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="300">
-            <div class="pricing-item">
-              <h3>Developer Plan</h3>
-              <h4><sup>$</sup>49<span> / month</span></h4>
-              <ul>
-                <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-                <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-                <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-                <li><i class="bi bi-check"></i> <span>Pharetra massa massa ultricies</span></li>
-                <li><i class="bi bi-check"></i> <span>Massa ultricies mi quis hendrerit</span></li>
-              </ul>
-              <a href="#" class="buy-btn">Buy Now</a>
-            </div>
-          </div><!-- End Pricing Item -->
+                    if (amount && !isNaN(amount) && amount > 0) {
+                        $.ajax({
+                            url: '/deposit',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ id: assetId, amount: amount }),
+                            success: function (response) {
+                                if (response.success) {
+                                    alert('입금이 성공적으로 완료되었습니다.');
+                                    location.reload(); // 페이지 새로고침하여 업데이트된 데이터 표시
+                                } else {
+                                    alert('입금에 실패했습니다. 다시 시도해주세요.');
+                                }
+                            },
+                            error: function () {
+                                alert('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+                            }
+                        });
+                    } else {
+                        alert('올바른 금액을 입력해주세요.');
+                    }
+                });
+                $('.withdraw-btn').on('click', function () {
+                    const assetId = $(this).data('id');
+                    const amount = prompt("출금할 금액을 입력하세요:");
 
-        </div>
-
-      </div>
-
-    </section><!-- /Pricing Section -->
-
-    <!-- Alt Pricing Section -->
-    <section id="alt-pricing" class="alt-pricing section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <span>Alt Pricing<br></span>
-        <h2>Alt Pricing</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-      </div><!-- End Section Title -->
-
-      <div class="container">
-
-        <div class="row gy-4 pricing-item" data-aos="fade-up" data-aos-delay="100">
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <h3>Free Plan</h3>
-          </div>
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <h4><sup>$</sup>0<span> / month</span></h4>
-          </div>
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <ul>
-              <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-              <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-              <li class="na"><i class="bi bi-x"></i> <span>Pharetra massa massa ultricies</span></li>
-            </ul>
-          </div>
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
-          </div>
-        </div><!-- End Pricing Item -->
-
-        <div class="row gy-4 pricing-item featured mt-4" data-aos="fade-up" data-aos-delay="200">
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <h3>Business Plan</h3>
-          </div>
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <h4><sup>$</sup>29<span> / month</span></h4>
-          </div>
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <ul>
-              <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-              <li><i class="bi bi-check"></i> <strong>Nec feugiat nisl pretium</strong></li>
-              <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-            </ul>
-          </div>
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
-          </div>
-        </div><!-- End Pricing Item -->
-
-        <div class="row gy-4 pricing-item mt-4" data-aos="fade-up" data-aos-delay="300">
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <h3>Developer Plan</h3>
-          </div>
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <h4><sup>$</sup>49<span> / month</span></h4>
-          </div>
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <ul>
-              <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-              <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-              <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-            </ul>
-          </div>
-          <div class="col-lg-3 d-flex align-items-center justify-content-center">
-            <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
-          </div>
-        </div><!-- End Pricing Item -->
-
-      </div>
-
-    </section><!-- /Alt Pricing Section -->
-
-  </main>
-
-  <%- include('../footer.html') %>
-
+                    if (amount && !isNaN(amount) && amount > 0) {
+                        $.ajax({
+                            url: '/withdraw',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ id: assetId, amount: amount }),
+                            success: function (response) {
+                                if (response.success) {
+                                    alert('출금이 성공적으로 완료되었습니다.');
+                                    location.reload(); // 페이지 새로고침하여 업데이트된 데이터 표시
+                                } else {
+                                    alert(response.message || '출금에 실패했습니다. 다시 시도해주세요.');
+                                }
+                            },
+                            error: function () {
+                                alert('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+                            }
+                        });
+                    } else {
+                        alert('올바른 금액을 입력해주세요.');
+                    }
+                });
+            });
+        </script>
 </body>
 
 </html>
