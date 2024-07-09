@@ -11,8 +11,14 @@
 <body class="board-page">
 
     <%- include('../menu.html') %>
-
+ <% if(typeof data !== 'undefined' && data.alertMsg){ %>
+      <script>
+        alert(`<%= alertMsg %>`) ;
+        window.location.href = "/board/board";  // 원하는 경로로 수정 alerMsg 안뜸
+      </script>            
+    <% } %>
   <main class="main">
+   
 <!-- The Modal -->
   <form action="/post/update" method="post">
     <span id="hiddenSpan"></span>
@@ -103,7 +109,8 @@
                     답변완료
                   <% } %>
                 </td>
-                <td style="float:right;"><button class="delete btn btn-outline-danger" data-id="<%= data[i]._id %>">삭제</button></td>
+                  <td style="float:right;" ><button class="delete btn btn-outline-danger" data-id="<%= data[i]._id %>">삭제</button></td>
+            
               </tr>
           
           </tr>
@@ -112,7 +119,7 @@
   </table>
   <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
-      <% if (currentPage > 1) { %>
+      <% if (typeof currentPage !== 'undefined' && currentPage > 1) { %>
       <li class="page-item">
         <a class="page-link" href="/board/admin_board?page=<%= currentPage - 1 %>">Previous</a>
       </li>
@@ -120,7 +127,7 @@
       <li class="page-item">
         <span class="page-link"><%= currentPage %></span>
       </li>
-      <% if (currentPage < totalPages) { %>
+      <% if (typeof currentPage !== 'undefined' && currentPage < totalPages) { %>
       <li class="page-item">
         <a class="page-link" href="/board/admin_board?page=<%= currentPage + 1 %>">Next</a>
       </li>
@@ -216,7 +223,8 @@
 
       const form = document.createElement("form");
       form.method = "POST";
-      form.action = "/post/admin_delete";
+      form.action = "/post/delete";
+
       
       const post_id_input = document.createElement("input");
       post_id_input.type = "hidden";
@@ -236,6 +244,7 @@
 
     
     });
+    
     
 
 
