@@ -125,11 +125,9 @@
                 <td style="width: 10%;"><%= data[i].boardtype %></td>
                 <td style="width: 10%;"><%= data[i].id %></td>
                 <td style="width: 15%;" data-bs-toggle="modal" data-bs-target="#myModal">
-                  <a href="#" onclick="modal_content('<%= data[i]._id %>', '<%= data[i].title %>', '<%= data[i].content %>', '<%= data[i].date %>', '<%= data[i].path %>')"><%= data[i].title %></a>
-                  <!-- <a href="#" onclick="modal_content('<%= data[i]._id %>', '<%= data[i].title %>', '<%= data[i].content %>', '<%= data[i].date %>', '<%= data[i].path %>','<%= data[i].answer %>')"><%= data[i].title %></a> -->
+                    <a href="#" onclick="modal_content('<%= data[i]._id %>', '<%= data[i].title %>', '<%= data[i].content %>', '<%= data[i].date %>', '<%= data[i].path %>','<%= data[i].answer %>')"><%= data[i].title %></a>
                 </td>
                 <td style="width: 40%;"><%= data[i].content %></td>
-                <td style="width: 15%;"><%= data[i].date %></td>
                 <td><%= data[i].date %></td>
                 <td data-bs-toggle="modal" data-bs-target="#answerModal">
                   <a href="#"
@@ -213,9 +211,13 @@
       $("#answerSpan").html(`<button type="submit" class="btn btn-warning" >완료</button>`);
       // 버튼 클릭 이벤트 리스너 설정
     }
+
+    
+    
     function search() {
         const field = document.getElementById('searchField').value;
         const query = document.getElementById('searchQuery').value;
+
         $.ajax({
             type: 'GET',
             url: '/search',
