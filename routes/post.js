@@ -26,7 +26,6 @@ router.post('/post/photo',upload.single('picture') , (req, res) => {
 
 ////로그인 된 사용자만 게시물 삭제해주기. 이때 자기글에 대해서만 삭제 가능하도록 해야함.
 router.post("/post/delete", async (req, res) => {
-  console.log(req.body, "\n===============");
   if (req.session.user) {
     // 로그인 된 사용자라면
     const { mongodb } = await setup();
@@ -47,7 +46,7 @@ router.post("/post/delete", async (req, res) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("board/board.ejs", { data: { alertMsg: "글이 없거나 글쓴이가 일치하지 않습니다 " } });
+          res.redirect(`/board/board?alertMsg=${encodeURIComponent("글이 없거나 글쓴이가 일치하지 않습니다")}`);
         }
       })
       .catch((err) => {
@@ -81,7 +80,7 @@ router.post("/post/admin_delete", async (req, res) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("board/admin_board.ejs", { data: { alertMsg: "글이 없거나 글쓴이가 일치하지 않습니다 " } });
+          res.redirect(`/board/admin_board?alertMsg=${encodeURIComponent("글이 없거나 글쓴이가 일치하지 않습니다")}`);
         }
       })
       .catch((err) => {
@@ -116,7 +115,7 @@ router.post("/post/update", async (req, res) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("board/board.ejs", { data: { alertMsg: "글이 없거나 글수정자가 일치하지 않습니다 " } });
+          res.redirect(`/board/board?alertMsg=${encodeURIComponent("글이 없거나 글쓴이가 일치하지 않습니다")}`);
         }
       })
       .catch((err) => {
@@ -129,38 +128,37 @@ router.post("/post/update", async (req, res) => {
 });
 ////관리자 수정일때
 router.post("/post/admin_update", async (req, res) => {
-  //console.log(req.body, "\n===============");
   if (req.session.user) {
-    // 로그인 된 사용자라면
     const { mongodb } = await setup();
-    mongodb
-      .collection("post")
-      .findOne({ _id: new ObjectId(req.body._id) }) //자기글인지 확인
+
+    mongodb.collection("post").findOne({ _id: new ObjectId(req.body._id) })
       .then((result) => {
-        //console.log(result, "\n", req.session);
         if (result) {
-          mongodb
-            .collection("post")
-            .updateOne({ _id: new ObjectId(req.body._id) }, { $set: { title: req.body.title, content: req.body.content, date: req.body.someDate,answer: req.body.answer } })
-            .then((result) => {
-              console.log("글 수정 완료");
-              admin_list(mongodb, req, res);
-            })
-            .catch((err) => {
-              res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
-            });
+          mongodb.collection("post").updateOne(
+            { _id: new ObjectId(req.body._id) },
+            { $set: { title: req.body.title, content: req.body.content, date: req.body.someDate, answer: req.body.answer } }
+          )
+          .then(() => {
+            console.log("글 수정 완료");
+            admin_list(mongodb, req, res);
+          })
+          .catch((err) => {
+            console.error("글 수정 오류:", err);
+            res.render("index.ejs", { data: { alertMsg: "서버 오류: 잠시 후 다시 시도해주세요" } });
+          });
         } else {
-          res.render("board/admin_board.ejs", { data: { alertMsg: "글이 존재하지 않습니다 " } });
+          res.redirect(`/board/admin_board?alertMsg=${encodeURIComponent("글이 없거나 글쓴이가 일치하지 않습니다")}`);
         }
       })
       .catch((err) => {
-        console.log(err);
-        res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
+        console.error("글 조회 오류:", err);
+        res.render("index.ejs", { data: { alertMsg: "서버 오류: 잠시 후 다시 시도해주세요" } });
       });
   } else {
     res.render("index.ejs", { data: { alertMsg: "로그인 먼저 해주세요" } });
   }
 });
+
 
 //글쓰기 처리
 router.post("/post/save", async (req, res) => {
@@ -271,7 +269,7 @@ router.post("/post/answer", async (req, res) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("board/admin_board.ejs", { data: { alertMsg: "이미 답변이 작성된 글입니다" } });
+          res.redirect(`/board/admin_board?alertMsg=${encodeURIComponent("글이 없거나 글쓴이가 일치하지 않습니다")}`);
         }
       })
       .catch((err) => {
