@@ -15,22 +15,22 @@
 
   <main class="main">
 <!-- 첫 번째 모달 -->
-<form action="/post/admin_update" method="post">
+<form id="updateForm" action="/post/admin_update" method="post">
   <span id="hiddenSpan"></span>
   <div class="modal" id="myModal">
     <div class="modal-dialog">
       <div class="modal-content">
         <!-- Modal Header -->
         <div class="modal-header">
-          제목 :
+          제목:
           <div><h4 class="modal-title" id="postTitle"></h4></div>
         </div>
 
         <!-- Modal body -->
         <div class="modal-body">
-          <div>내용 : <span id="postContent"></span></div>
+          <div>내용: <span id="postContent"></span></div>
           <p></p>
-          <div>작성일 : <span id="postDate"></span></div>
+          <div>작성일: <span id="postDate"></span></div>
           <p></p>
           <div>첨부이미지: <span id="postImg"></span></div>
           <p></p>
@@ -40,7 +40,8 @@
         <!-- Modal footer -->
         <div class="modal-footer">
           <span id="updateSpan">
-            <button type="button" class="btn btn-info" onclick="editDisplay()">수정하러가기</button>
+            <!-- 수정 버튼 클릭 시 이벤트 처리는 JavaScript에서 수행 -->
+            <button type="button" class="btn btn-info" onclick="editDisplay()">수정하러 가기</button>
           </span>
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         </div>
@@ -48,6 +49,7 @@
     </div>
   </div>
 </form>
+
 
 <!-- 두 번째 모달 -->
 <form action="/post/answer" method="post">
@@ -184,14 +186,14 @@
       $("#updateSpan").html(`<button type="button" class="btn btn-info" onclick="editDisplay()">수정하러가기</button>`);
     }
     function editDisplay() {
-      //console.log(modalData._id, modalData.title, modalData.content, modalData.date);
-      $("#hiddenSpan").html(`<input  type='hidden' value='${modalData._id}' name='_id'>`);
-      $("#postTitle").html(`<input value='${modalData.title}' name='title'>`);
-      $("#postContent").html(`<textarea name='content'>${modalData.content}</textarea>`);
-      $("#postDate").html(`<input type='date' value='${modalData.date}' name='someDate'>`);
-      $("#postAnswer").html(`<textarea name='content'>${modalData.answer}</textarea>`);
-      $("#updateSpan").html(`<button type="button" class="btn btn-warning" >수정</button>`);
+        $("#hiddenSpan").html(`<input type='hidden' value='${modalData._id}' name='_id'>`);
+        $("#postTitle").html(`<input value='${modalData.title}' name='title'>`);
+        $("#postContent").html(`<textarea name='content'>${modalData.content}</textarea>`);
+        $("#postDate").html(`<input type='date' value='${modalData.date}' name='someDate'>`);
+        $("#postAnswer").html(`<textarea name='answer'>${modalData.answer}</textarea>`); // 'content'가 아닌 'answer'로 수정
+        $("#updateSpan").html(`<button type="button" class="btn btn-warning">수정</button>`);
     }
+
     function modal_answercontent(_id, title, content, date, path, answer) {
       modalData = { _id, title, content, date, path, answer };
       $("#answerPostTitle").text(`${modalData.title}`);
@@ -252,16 +254,14 @@
             tableBody.append(row);
         });
     }
-    $(document).ready(function() {
-    $("#updateSpan").on("click", "button", function() {
-        if (confirm("정말로 수정하시겠습니까?")) {
-            $("form").submit();
-        } else {
-            console.log("사용자가 수정을 취소했습니다.");
-            return false;
-        }
+    // 수정 버튼 클릭 시 폼 제출 처리
+$("#updateSpan").on("click", "button", function() {
+    if (confirm("정말로 수정하시겠습니까?")) {
+        $("#updateForm").submit(); // 폼 제출
+    } else {
+        console.log("사용자가 수정을 취소했습니다.");
+        return false;
     }
-  );
 });
 
     //답변하기 모달
