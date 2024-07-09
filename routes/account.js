@@ -173,8 +173,9 @@ const pw_check = (password) => {
 };
 
 const id_check = (sentence) => {
-  var check = sentence.replaceAll(' ', ''); // 띄어쓰기 제거
-  var checks = check.test(password) && true; // 더 추가할거 있으면 확인
+  var check_space = sentence.replaceAll(' ', ''); // 띄어쓰기 제거
+  var check_quotation = /['"]/; //'과 " 입력 거부
+  var checks = check_space.test(password) && check_quotation;  //더 추가할거 있으면 확인
   return checks;
 };
 
