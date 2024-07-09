@@ -1,11 +1,5 @@
 const express = require("express");
 const path = require("path");
-<<<<<<< HEAD
-const dotenv = require("dotenv").config();
-const assetRouter = require("./routes/assetManagement");
-const https = require("https");
-const fs = require("fs");
-=======
 const dotenv = require("dotenv");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
@@ -13,7 +7,6 @@ const bodyParser = require("body-parser");
 const assetRouter = require("./routes/assetManagement");
 
 dotenv.config();
->>>>>>> b015a9b4dc995345aa58c54c416016846df5e83d
 
 const app = express();
 const port = process.env.WEB_PORT || 8080;

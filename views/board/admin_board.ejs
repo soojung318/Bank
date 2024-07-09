@@ -55,9 +55,11 @@
                 <td style="width: 10%;"><%= data[i].boardtype %></td>
                 <td style="width: 10%;"><%= data[i].id %></td>
                 <td style="width: 15%;" data-bs-toggle="modal" data-bs-target="#myModal">
-                    <a href="#" onclick="modal_content('<%= data[i]._id %>', '<%= data[i].title %>', '<%= data[i].content %>', '<%= data[i].date %>', '<%= data[i].path %>','<%= data[i].answer %>')"><%= data[i].title %></a>
+                  <a href="#" onclick="modal_content('<%= data[i]._id %>', '<%= data[i].title %>', '<%= data[i].content %>', '<%= data[i].date %>', '<%= data[i].path %>')"><%= data[i].title %></a>
+                  <!-- <a href="#" onclick="modal_content('<%= data[i]._id %>', '<%= data[i].title %>', '<%= data[i].content %>', '<%= data[i].date %>', '<%= data[i].path %>','<%= data[i].answer %>')"><%= data[i].title %></a> -->
                 </td>
                 <td style="width: 40%;"><%= data[i].content %></td>
+                <td style="width: 15%;"><%= data[i].date %></td>
                 <td><%= data[i].date %></td>
                 <td <% if(data[i].answer !== "null"){ %> disabled <% } %> data-bs-toggle="modal" data-bs-target="#answerModal">
                   <a href="#" onclick="modal_answercontent('<%= data[i]._id %>','<%= data[i].title %>','<%= data[i].content %>','<%= data[i].date %>','<%= data[i].path %>','<%= data[i].answer %>')">답변하기</a>
@@ -135,13 +137,6 @@
     function search() {
         const field = document.getElementById('searchField').value;
         const query = document.getElementById('searchQuery').value;
-
-    
-    
-    function search() {
-        const field = document.getElementById('searchField').value;
-        const query = document.getElementById('searchQuery').value;
-
         $.ajax({
             type: 'GET',
             url: '/search',

@@ -251,16 +251,9 @@ router.post("/post/answer", async (req, res) => {
   if (req.session.user && req.session.user.role == 'admin') {
     // 로그인 된 사용자라면&관리자라면
     const { mongodb } = await setup();
-<<<<<<< HEAD
-    const answer=null;
-    mongodb
-      .collection("post")
-      .findOne({ _id: new ObjectId(req.body._id), answer: { $exists: false } }) // 답변이 안된 건지 확인
-=======
     mongodb
       .collection("post")
       .findOne({ _id: new ObjectId(req.body._id)}) // 답변이 안된 건지 확인
->>>>>>> b015a9b4dc995345aa58c54c416016846df5e83d
       .then((result) => {
         //console.log(result, "\n", req.session);
         if (result) {
