@@ -47,7 +47,7 @@ router.post("/post/delete", async (req, res) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("index.ejs", { data: { alertMsg: "글이 없거나 글쓴이가 일치하지 않습니다 " } });
+          res.render("board/board.ejs", { data: { alertMsg: "글이 없거나 글쓴이가 일치하지 않습니다 " } });
         }
       })
       .catch((err) => {
@@ -81,7 +81,7 @@ router.post("/post/admin_delete", async (req, res) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("index.ejs", { data: { alertMsg: "글이 없거나 글쓴이가 일치하지 않습니다 " } });
+          res.render("board/admin_board.ejs", { data: { alertMsg: "글이 없거나 글쓴이가 일치하지 않습니다 " } });
         }
       })
       .catch((err) => {
@@ -150,7 +150,7 @@ router.post("/post/admin_update", async (req, res) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("board/admin_board.ejs", { data: { alertMsg: "글이 없거나 글수정자가 일치하지 않습니다 " } });
+          res.render("board/admin_board.ejs", { data: { alertMsg: "글이 존재하지 않습니다 " } });
         }
       })
       .catch((err) => {
@@ -261,17 +261,17 @@ router.post("/post/answer", async (req, res) => {
             .collection("post")
             .updateOne(
               { _id: new ObjectId(req.body._id) },
-              { $set: {answer:answer } }
+              { $set: {answer:req.body.answer } }
             )
             .then((updateResult) => {
               console.log("답변 완료");
-              list(mongodb, req, res);
+              admin_list(mongodb, req, res);
             })
             .catch((err) => {
               res.render("index.ejs", { data: { alertMsg: "서버오류: 잠시 뒤 다시 시도 해주세요" } });
             });
         } else {
-          res.render("index.ejs", { data: { alertMsg: "이미 답변이 작성된 글입니다" } });
+          res.render("board/admin_board.ejs", { data: { alertMsg: "이미 답변이 작성된 글입니다" } });
         }
       })
       .catch((err) => {
@@ -316,7 +316,6 @@ function list(mongodb, req, res) {
         .limit(limit)
         .toArray()
         .then((result) => {
-          console.log(result);
           res.render("board/board.ejs", { data: result, currentPage: page, totalPages });
         });
     });
