@@ -31,7 +31,7 @@
 
 /* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
 :root {
-  --nav-color: rgba(255, 255, 255, 0.6);  /* The default color of the main navmenu links */
+  --nav-color: #ffffff;  /* The default color of the main navmenu links */
   --nav-hover-color: #ffffff; /* Applied to main navmenu links when they are hovered over or active */
   --nav-mobile-background-color: #ffffff; /* Used as the background color for mobile navigation menu */
   --nav-dropdown-background-color: #ffffff; /* Used as the background color for dropdown items that appear when hovering over primary navigation items */
@@ -317,6 +317,7 @@ h6 {
   .navmenu a,
   .navmenu a:focus {
     color: var(--nav-color);
+    text-shadow: -1px 0px #000000, 0px 1px #000000, 1px 0px #000000, 0px -1px #000000;
     padding: 18px 15px;
     font-size: 16px;
     font-family: var(--nav-font);
@@ -2002,6 +2003,35 @@ section,
 /*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/
-.starter-section {
-  /* Add your styles here */
+
+#loginSpan {
+  display: flex;
+  align-items: center;
+  height: 60px; /* 원하는 높이로 조정 */
+}
+
+#loginSpan form {
+  display: flex;
+  align-items: center;
+}
+
+#loginSpan input[type="text"],
+#loginSpan input[type="password"],
+#loginSpan input[type="submit"],
+#loginSpan .btn-getstarted {
+  margin-right: 10px;
+  padding: 8px; 
+  font-size: 14px;
+  width: 120px;
+}
+#loginSpan div {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+#loginSpan div img {
+  margin-right: 5px;
 }

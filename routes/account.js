@@ -2,6 +2,15 @@ const router = require('express').Router();
 const setup = require('../db_setup');
 
 const sha = require('sha256');
+const svgCaptcha = require('svg-captcha');
+
+// CAPTCHA 이미지 생성
+router.get('/captcha', (req, res) => {
+  const captcha = svgCaptcha.create();
+  req.session.captcha = captcha.text;
+  res.type('svg');
+  res.status(200).send(captcha.data);
+});
 
 // 로그아웃 처리
 router.get('/account/logout', (req, res) => {
@@ -11,6 +20,10 @@ router.get('/account/logout', (req, res) => {
 
 // 로그인 처리
 router.post("/account/login", async (req, res) => {
+  if (req.body.captcha !== req.session.captcha) {
+    return res.render('index.ejs', { data: { alertMsg: 'CAPTCHA 확인 실패. 다시 시도해주세요.' } });
+  }
+
   const { mongodb, mysqldb } = await setup();
   try {
     const result = await mongodb.collection("account").findOne({ userid: req.body.userid });
@@ -50,13 +63,12 @@ router.post("/account/login", async (req, res) => {
   }
 });
 
-
 // 회원 가입 처리
 router.post('/account/save', async (req, res) => {
   const { mongodb, mysqldb } = await setup();
 
   // 비밀번호 입력값 검증
-  if (pw_check(req.body.userpw) == false){
+  if (pw_check(req.body.userpw) == false) {
     return res.render('login_enter.ejs', { data: { pwMsg: '비밀번호는 8 ~ 16자 이내로 영문, 숫자, 특수문자를 최소 한가지씩 사용하여 설정해주세요.' } });
   }
   try {
@@ -109,17 +121,62 @@ router.post('/account/save', async (req, res) => {
 router.get('/account/enter', (req, res) => {
   res.render('login_enter.ejs');
 });
+
+// 회원탈퇴 처리
+router.post('/delete-account', async (req, res) => {
+  const { mongodb, mysqldb } = await setup();
+  const { userid, password } = req.body;
+  
+  try {
+    const result = await mongodb.collection("account").findOne({ userid: userid });
+
+    // 사용자 확인
+    if (!result) {
+      return res.status(400).json({ success: false, message: "해당 사용자가 존재하지 않습니다." });
+    }
+
+    //비밀번호 검증
+    const sql = `SELECT salt FROM UserSalt WHERE userid=?`;
+    mysqldb.query(sql, [userid], async (err, rows, fields) => {
+      if (err || rows.length === 0) {
+        return res.status(500).json({ success: false, message: "서버 오류가 발생했습니다. 나중에 다시 시도해주세요." });
+      }
+      try {
+        const salt = rows[0].salt;
+        const hashPw = sha(password + salt);
+        if (result.userpw == hashPw) {
+          await mongodb.collection("account").deleteOne({ userid: userid });
+          mysqldb.query(`DELETE FROM UserSalt WHERE userid=?`, [userid], (err, rows, fields) => {
+            if (err) {
+              return res.status(500).json({ success: false, message: "서버 오류가 발생했습니다. 나중에 다시 시도해주세요." });
+            }
+            // 세션을 종료 후 로그아웃 처리
+            req.session.destroy();
+            res.clearCookie("uid");
+            return res.json({ success: true }); //성공 메세지 반환
+          });
+        } else {
+          return res.status(400).json({ success: false, message: "비밀번호가 올바르지 않습니다." });
+        }
+      } catch (err) {
+        return res.status(500).json({ success: false, message: "서버 오류가 발생했습니다. 나중에 다시 시도해주세요." });
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "서버 오류가 발생했습니다. 나중에 다시 시도해주세요." });
+  }
+});
+
 const pw_check = (password) => {
-  var check = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/; //정규식으로 비밀번호 체크
- 
-	return check.test(password);
+  var check = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/; // 정규식으로 비밀번호 체크
+  return check.test(password);
 };
 
 const id_check = (sentence) => {
-  var check = sentence.replaceAll(' ', ''); //띄어쓰기 제거
-  var checks = check.test(password) && true;  //더 추가할거 있으면 확인
-  
-  return checks;  
+  var check_space = sentence.replaceAll(' ', ''); // 띄어쓰기 제거
+  var check_quotation = /['"]/; //'과 " 입력 거부
+  var checks = check_space.test(password) && check_quotation;  //더 추가할거 있으면 확인
+  return checks;
 };
 
 module.exports = router;
